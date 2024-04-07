@@ -20,13 +20,18 @@ current_time = int(time.time() * 1000)
 print('Server timestamp:', server_timestamp)
 print('Current timestamp:', current_time)
 
-# 계좌 정보 불러오기
-account_info = client.futures_account_balance(timestamp=current_time)
+# BTCUSDT 거래 내용 불러오기
+trade_list = client.futures_account_trades(symbol="BTCUSDT") #,timestamp=current_time)
 
-# # USDT 자산 확인하기
-USDT_balance = None
-for balance in account_info :
-    if balance['asset'] == 'USDT':
-        USDT_balance = balance['balance']
-        print('USDT balance:', USDT_balance)
-        break
+
+# 출력 하기
+for trade in trade_list :
+    print(trade)
+
+
+# 출력 하기 #2 
+for trade in trade_list :
+    if trade['side'] == 'BUY':
+        print('BUY Position : ',trade['price'])
+    if trade['side'] == 'SELL':
+        print('SELL Position : ',trade['price'])
