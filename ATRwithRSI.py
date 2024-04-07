@@ -160,7 +160,7 @@ print("Latest EMA:", ema)
 # Calculate previous trailing stop and EMA
 prev_close_price = ohlc_data[-2][4]
 prev_n_loss = sensitivity * atr
-prev_atr_trailing_stop, prev_pos = calculate_trailing_stop(prev_close_price, atr_trailing_stop, prev_n_loss)
+prev_atr_trailing_stop = calculate_trailing_stop(prev_close_price, atr_trailing_stop, prev_n_loss)
 prev_ema_period = 14
 prev_close_prices = [data[4] for data in ohlc_data[:-1]]
 prev_ema = calculate_ema(prev_close_prices, prev_ema_period)
