@@ -168,7 +168,7 @@ ema_period = 14
 ema = calculate_ema(close_prices, ema_period)
 
 # Print results
-print("Price:", close_prices)
+print("Price:", ohlc_data[-1][4])
 print("ATR:", atr)
 print("atr_trailing_stop:", atr_trailing_stop)
 print("Position:", last_pos)
