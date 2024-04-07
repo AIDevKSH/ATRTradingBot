@@ -5,7 +5,7 @@ import os
 load_dotenv()
 
 api_key = os.getenv("BINANCE_API_KEY")
-api_secret = os.getenv("BINANACE_API_SECRET")
+api_secret = os.getenv("BINANCE_API_SECRET")
 client = Client(api_key, api_secret)
 
 # Binance 서버 시간 가져오기
