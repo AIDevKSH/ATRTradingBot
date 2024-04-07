@@ -40,22 +40,10 @@ for kline in klines:
     ohlc_data.append([timestamp, open_price, high_price, low_price, close_price, volume])
 
 # Initial position
-pos = 0
 atr_sum = 0
 period = 14
 prev_close = ohlc_data[0][4]
 atr_trailing_stop = 0.0
-
-# Function to calculate position
-def calculate_position(close, atr_trailing_stop, pos):
-    atr_trailing_stop_prev = atr_trailing_stop[-1] if len(atr_trailing_stop) > 0 else 0
-    
-    if close[-2] < atr_trailing_stop_prev and close[-1] > atr_trailing_stop_prev:
-        return 1
-    elif close[-2] > atr_trailing_stop_prev and close[-1] < atr_trailing_stop_prev:
-        return -1
-    else:
-        return pos
 
 # Define a function to calculate EMA
 def calculate_ema(data, window):
@@ -131,21 +119,18 @@ def calculate_atr():
     return atr
 
 # Function to calculate trailing stop
-def calculate_trailing_stop(close, atr_trailing_stop, n_loss, pos):
+def calculate_trailing_stop(close, atr_trailing_stop, n_loss):
     if close > atr_trailing_stop:
         atr_trailing_stop = max(atr_trailing_stop, close - n_loss)
-        pos = 1
     elif close < atr_trailing_stop:
         atr_trailing_stop = min(atr_trailing_stop, close + n_loss)
-        pos = -1
     else:
         if close > atr_trailing_stop:
             atr_trailing_stop = close - n_loss
         else:
             atr_trailing_stop = close + n_loss
-        pos = 0
     
-    return atr_trailing_stop, pos
+    return atr_trailing_stop
 
 # Main logic starts here
 
@@ -156,11 +141,10 @@ atr = calculate_atr()
 n_loss = sensitivity * atr
 
 # Calculate trailing stop
-atr_trailing_stop, pos = calculate_trailing_stop(close_price, atr_trailing_stop, n_loss, pos)
+atr_trailing_stop = calculate_trailing_stop(close_price, atr_trailing_stop, n_loss)
 
 # Calculate last position
 last_close_price = [data[4] for data in ohlc_data[-2:]]  # Get the last two closing prices
-last_pos = calculate_position(last_close_price, [atr_trailing_stop], pos)
 
 # Calculate EMA
 close_prices = [data[4] for data in ohlc_data]
@@ -171,13 +155,12 @@ ema = calculate_ema(close_prices, ema_period)
 print("Price:", ohlc_data[-1][4])
 print("ATR:", atr)
 print("atr_trailing_stop:", atr_trailing_stop)
-print("Position:", last_pos)
 print("Latest EMA:", ema)
 
 # Calculate previous trailing stop and EMA
 prev_close_price = ohlc_data[-2][4]
 prev_n_loss = sensitivity * atr
-prev_atr_trailing_stop, prev_pos = calculate_trailing_stop(prev_close_price, atr_trailing_stop, prev_n_loss, pos)
+prev_atr_trailing_stop, prev_pos = calculate_trailing_stop(prev_close_price, atr_trailing_stop, prev_n_loss)
 prev_ema_period = 14
 prev_close_prices = [data[4] for data in ohlc_data[:-1]]
 prev_ema = calculate_ema(prev_close_prices, prev_ema_period)
