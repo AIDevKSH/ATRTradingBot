@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from binance.client import Client
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
@@ -99,9 +98,11 @@ def calculate_atr_trailing_stop(df):
 
     return df
 
-# 0 : initial value, no crossover | 1 : upward crossover | -1 : downward crossover
 def if_crossover(df):
-    
+    #  0 : initial value, no crossover 
+    #  1 : upward crossover
+    # -1 : downward crossover
+
     df = df.tail(2)
     
     prev_close = df.iloc[0]['Close']
@@ -119,8 +120,12 @@ def if_crossover(df):
 
     return crossover
 
-# 0 : Hold | 1 : Start Long Position | -1 : Start Short Position | 2 : Close Long Positon | -2 : Close Short Position
 def position_decision(df, crossover, rsi):
+    #  0 : Hold 
+    #  1 : Enter Long  Position, Close Short Position
+    # -1 : Enter Short Position, Close Long Position
+    #  2 : Close Long  Positon
+    # -2 : Close Short Position
     df = df.tail(1)
     close = df.iloc[0]['Close']
     atr_trailing_stop = df.iloc[0]['ATR_Trailing_Stop']
@@ -145,13 +150,20 @@ def position_decision(df, crossover, rsi):
 if __name__ == "__main__":
     ohlc_df = get_ohlc()
     ohlc_df = calculate_atr(ohlc_df)
-    ohlc_df = calculate_atr_trailing_stop(ohlc_df)
-    rsi = calculate_rsi(ohlc_df) # most recent value
+    ohlc_df = calculate_atr_trailing_stop(ohlc_df) # Data Frame
+    rsi = calculate_rsi(ohlc_df) # Most Recent Value
 
     crossover = if_crossover(ohlc_df)
-    # [crossover] 0 : initial value, no crossover | 1 : upward crossover | -1 : downward crossover
+    #  0 : Initial Value, No Crossover 
+    #  1 : Upward Crossover
+    # -1 : Downward Crossover
+
     decision = position_decision(ohlc_df, crossover, rsi)
-    # [decison] 0 : Hold | 1 : Start Long Position | -1 : Start Short Position | 2 : Close Long Positon | -2 : Close Short Position
+    #  0 : Hold 
+    #  1 : Enter Long  Position, Close Short Position
+    # -1 : Enter Short Position, Close Long Position
+    #  2 : Close Long  Positon
+    # -2 : Close Short Position
 
     print(ohlc_df)
     print(decision)
