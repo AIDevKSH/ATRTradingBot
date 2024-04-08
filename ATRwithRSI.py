@@ -297,7 +297,10 @@ if __name__ == "__main__":
 
 
 
-
+    position = my_position2()
+    print(position)
+    print("\n\n")
+    time.sleep(3)
 
     binance.create_market_buy_order(
         symbol=symbol,
@@ -307,6 +310,8 @@ if __name__ == "__main__":
 
     position = my_position2()
     print(position)
+    print("\n\n")
+    time.sleep(3)
 
     binance.create_market_sell_order(
         symbol=symbol,
@@ -322,9 +327,16 @@ if __name__ == "__main__":
 
     position = my_position2()
     print(position)
+    print("\n\n")
+    time.sleep(3)
 
     binance.create_market_buy_order(
         symbol=symbol,
         amount=25,
     )
+    time.sleep(3)
+
+    position = my_position2()
+    print(position)
+    print("\n\n")
     time.sleep(3)
