@@ -18,34 +18,25 @@ binance = ccxt.binance(config={
 
 symbol = 'DOGEUSDT'
 leverage = 1
-margin_type = 'ISOLATED'
 
 def get_balance():
-    # 현재 usdt 잔고
     balance = binance.fetch_balance(params={"type": "future"})
     # print(balance['USDT'])
     return balance
     # {'free': 49.1918193, 'used': 0.0, 'total': 49.20165886}
 
 def enter_long():
-    # 레버리지 롱 포지션
-    
     resp = binance.fapiprivate_post_leverage({
         'symbol': symbol,
         'leverage': leverage,
     })
-
-    # resp2 = binance.fapiprivate_post_margintype({
-    #     'symbol': symbol,
-    #     'marginType': margin_type,
-    # })
 
     order = binance.create_market_buy_order(
         symbol=symbol,
         amount=25,
     )
     
-    return resp, resp2, order
+    return resp, order
 
 def close_long():
 
@@ -75,9 +66,8 @@ if __name__ == "__main__":
     print(balance['USDT'])
     time.sleep(2)
     
-    resp, resp2, order = enter_long()
+    resp, order = enter_long()
     print(resp)
-    print(resp2)
     print(order)
 
     time.sleep(2)
