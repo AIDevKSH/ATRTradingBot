@@ -222,9 +222,9 @@ def my_position():
 
     for position in positions:
         if position["symbol"] == symbol:
-            if float(position['positionAMT']) != 0:
+            if float(position['positionAmt']) != 0:
                 if_position = True
-                prev_amount = float(position['positionAMT'])
+                prev_amount = float(position['positionAmt'])
             else:
                 if_position = False
                 prev_amount = 0
