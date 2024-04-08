@@ -49,7 +49,7 @@ def get_ohlc():
 
 def get_current_price(df):
     df = df.tail(1)
-    current_price = df['Close']
+    current_price = float(df['Close'])
 
     return current_price
 
