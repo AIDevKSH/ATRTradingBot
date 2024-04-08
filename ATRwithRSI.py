@@ -27,7 +27,6 @@ leverage = 1
 
 def get_balance():
     balance_json = binance.fetch_balance(params={"type": "future"})
-    balance = json.loads(balance_json)
     free_balance = balance['free']
 
     return free_balance
