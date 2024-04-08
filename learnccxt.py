@@ -61,33 +61,40 @@ def my_position():
 
 if __name__ == "__main__":
 
-    print("포지션 진입")
+    print("포지션 진입\n\n")
 
     balance = get_balance()
     print(balance['USDT'])
     time.sleep(2)
     
+    print("\n\n\n")
+
     resp, order = enter_long()
     print(resp)
     print(order)
-
     time.sleep(2)
+
+    print("\n\n\n")
 
     position = my_position()
     print(position)
-
     time.sleep(2)
 
-    print("포지션 종료")
+    print("\n\n\n")
+
+    print("포지션 종료\n\n")
+
     order2 = close_long()
     print(order2)
-
     time.sleep(2)
+
+    print("\n\n\n")
 
     position = my_position()
     print(position)
-
     time.sleep(2)
+
+    print("\n\n\n")
 
     balance = get_balance()
     print(balance['USDT'])
