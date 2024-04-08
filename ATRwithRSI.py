@@ -218,8 +218,7 @@ def chart_analysis():
         # -2 : Close Short Position
 
         print(ohlc_df.tail(1))
-        print("\n")
-        print("RSI :",rsi)
+        print("RSI :",rsi, " Decision :", decision)
 
         return decision, ohlc_df
     
