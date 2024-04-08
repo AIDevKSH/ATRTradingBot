@@ -4,13 +4,50 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
 load_dotenv()
+import ccxt 
+import time
+import json
 
 api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
 client = Client(api_key=api_key, api_secret=api_secret)
 
+binance = ccxt.binance(config={
+    'apiKey': api_key, 
+    'secret': api_secret,
+    'enableRateLimit': True,
+    'options': {
+        'defaultType': 'future'
+    }
+})
+
 symbol = 'BNBUSDT'
 interval = '30m'
+leverage = 1
+
+def get_balance():
+    balance_json = binance.fetch_balance(params={"type": "future"})
+    balance = json.loads(balance_json)
+    free_balance = balance['free']
+
+    return free_balance
+
+def post_leverage():
+    resp = binance.fapiprivate_post_leverage({
+        'symbol': symbol,
+        'leverage': leverage,
+    })
+
+    return resp
+
+def my_position():
+    balance = binance.fetch_balance()
+    positions = balance['info']['positions']
+
+    for position in positions:
+        if position["symbol"] == symbol:
+            return position
+            # type : json
 
 def get_ohlc():
     # Calculate start and end time for the query
@@ -154,6 +191,8 @@ def position_decision(df, crossover, rsi):
     return position
 
 if __name__ == "__main__":
+    resp = post_leverage()
+
     ohlc_df = get_ohlc()
     current_price = get_current_price(ohlc_df)
     ohlc_df = calculate_atr(ohlc_df)
@@ -176,3 +215,12 @@ if __name__ == "__main__":
     print(decision)
     print(current_price)
 
+    free_balance = get_balance()
+    print(free_balance)
+    time.sleep(2)
+
+    print("\n\n\n")
+
+    position = my_position()
+    print(position)
+    time.sleep(2)
