@@ -285,3 +285,15 @@ if __name__ == "__main__":
     position = my_position()
     print("내포지션확인용 ",position)
     print("\n\n")
+    time.sleep(5)
+
+    binance.create_market_sell_order(
+        symbol=symbol,
+        amount=25,
+    )
+
+    time.sleep(1)
+
+    position = my_position()
+    print("내포지션확인용 ",position)
+    print("\n\n")
