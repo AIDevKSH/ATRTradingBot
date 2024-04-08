@@ -51,7 +51,7 @@ def close_long():
 
     order2 = binance.create_market_sell_order(
         symbol=symbol,
-        amount=1,
+        amount=5,
     )
     
     return order2
