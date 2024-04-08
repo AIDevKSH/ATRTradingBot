@@ -24,7 +24,7 @@ binance = ccxt.binance(config={
 
 symbol = 'DOGEUSDT'
 interval = '30m'
-leverage = 1
+leverage = 5
 
 def post_leverage():
     resp = binance.fapiprivate_post_leverage({
@@ -209,8 +209,8 @@ def calculate_amount(usdt, current_price):
         amount = int(amount) - 1
         return amount
     elif usdt < current_price:
-        amount = current_price / usdt/ 3
-        amount = int(amount) - 1
+        # 여기 나중에 다시 계산해야됨
+        amount = 0
         return amount
     else:
         amount = 0
@@ -221,9 +221,9 @@ def before_trade(ohlc_df):
         time.sleep(0.5)
 
         usdt = get_balance() # My Account
-        time.sleep(0.5)
         
         amount = calculate_amount(usdt, current_price)
+
         time.sleep(0.5)
 
         if_position, prev_amount = my_position()
@@ -232,45 +232,77 @@ def before_trade(ohlc_df):
         return if_position, prev_amount, amount
 
 def my_position():
+    #  if_position Value
+    #  0 : Initial Value, Have No Position
+    #  1 : Prev Positon is Long
+    # -1 : Prev Position is Short
+
     balance = binance.fetch_balance()
     positions = balance['info']['positions']
 
     for position in positions:
         if position["symbol"] == symbol:
             if float(position['positionAmt']) != 0:
-                if_position = True
                 prev_amount = float(position['positionAmt'])
+                if prev_amount > 0 : 
+                    if_position = 1
+                else :
+                    if_position = -1
+                    prev_amount = abs(prev_amount)
             else:
-                if_position = False
+                if_position = 0
                 prev_amount = 0
 
             return if_position, prev_amount
 
-def my_position2():
+def buy(amount):
+    binance.create_market_buy_order(
+        symbol=symbol,
+        amount=amount,
+    )
+    time.sleep(1)
+
+def sell(amount):
+    binance.create_market_sell_order(
+        symbol=symbol,
+        amount=amount,
+    )
+    time.sleep(1)
+
+def if_trade(decision):
+    if_position, prev_amount, amount = before_trade(ohlc_df)
+    if decision == 0:
+        return
+    
+    if_position, prev_amount, amount = before_trade(ohlc_df)
+
+    if decision == 1 and if_position == -1:
+        buy(prev_amount)
+        buy(amount)
+
+    elif decision == 1 and if_position != -1:
+        buy(amount)
+
+    elif decision == -1 and if_position == 1:
+        sell(prev_amount)
+        sell(amount)
+
+    elif decision == -1 and if_position != 1:
+        sell(amount)
+
+    elif decision == 2:
+        sell(amount)
+
+    elif decision == -2:
+        buy(amount)
+
+def my_status():
     balance = binance.fetch_balance()
     positions = balance['info']['positions']
 
     for position in positions:
         if position["symbol"] == symbol:
             return position
-
-def if_trade(decision):
-    if decision == 1:
-        # 숏 있으면 종료
-        # 롱 진입
-        print("롱")
-    elif decision == -1:
-        # 롱 있으면 종료
-        # 숏 진입
-        print("숏")
-    elif decision == 2:
-        # 롱 종료
-        print("롱 종료")
-    elif decision == -2:
-        # 숏 종료
-        print("숏 종료")
-    else:
-        pass
 
 if __name__ == "__main__":
     resp = post_leverage() # Once
@@ -279,64 +311,7 @@ if __name__ == "__main__":
     # Every 30 Min
     ohlc_df, decision = chart_analysis()
     time.sleep(1)
-    #  decision value
-    #  0 : Hold 
-    #  1 : Enter Long  Position, Close Short Position
-    # -1 : Enter Short Position, Close Long Position
-    #  2 : Close Long  Positon
-    # -2 : Close Short Position
-    
+    if_trade(decision)
 
-    
-    
-    # if_position, prev_amount, amount = before_trade(ohlc_df)
-
-    # if_trade(decision)
-    print("\n")
-    time.sleep(1)
-
-
-
-    position = my_position2()
+    position = my_status()
     print(position)
-    print("\n\n")
-    time.sleep(3)
-
-    binance.create_market_buy_order(
-        symbol=symbol,
-        amount=25,
-    )
-    time.sleep(3)
-
-    position = my_position2()
-    print(position)
-    print("\n\n")
-    time.sleep(3)
-
-    binance.create_market_sell_order(
-        symbol=symbol,
-        amount=25,
-    )
-    time.sleep(3)
-
-    binance.create_market_sell_order(
-        symbol=symbol,
-        amount=25,
-    )
-    time.sleep(3)
-
-    position = my_position2()
-    print(position)
-    print("\n\n")
-    time.sleep(3)
-
-    binance.create_market_buy_order(
-        symbol=symbol,
-        amount=25,
-    )
-    time.sleep(3)
-
-    position = my_position2()
-    print(position)
-    print("\n\n")
-    time.sleep(3)
