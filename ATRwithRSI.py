@@ -150,20 +150,7 @@ def my_balance(client, symbol):
     # 계좌 정보 불러오기
     account_info = client.futures_account_balance(timestamp=current_timestamp)
 
-    balances = {}
-    has_position = False
-
-    for balance in account_info:
-        asset = balance['asset']
-        if asset == symbol:
-            balances[asset] = balance['balance']
-        elif float(balance['balance']) != 0.0:  # 다른 코인이 있고 잔고가 0이 아닌 경우
-            balances[asset] = balance['balance']
-
-        if float(balance['initialMargin']) != 0.0 or float(balance['maintMargin']) != 0.0:
-            has_position = True
-
-    return balances, has_position
+    print(account_info)
 
 if __name__ == "__main__":
     ohlc_df = get_ohlc()
@@ -179,4 +166,4 @@ if __name__ == "__main__":
     print(ohlc_df)
     print(decision)
 
-    balances, has_position = my_balance(client, symbol)
+    
