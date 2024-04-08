@@ -42,7 +42,7 @@ def enter_long():
 
     order = binance.create_market_buy_order(
         symbol=symbol,
-        amount=5,
+        amount=6,
     )
     
     return resp, resp2, order
@@ -51,7 +51,7 @@ def close_long():
 
     order2 = binance.create_market_sell_order(
         symbol=symbol,
-        amount=5,
+        amount=6,
     )
     
     return order2
