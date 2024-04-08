@@ -20,7 +20,7 @@ binance = ccxt.binance(config={
     }
 })
 
-symbol = 'BNBUSDT'
+symbol = 'DOGEUSDT'
 interval = '30m'
 leverage = 1
 
@@ -202,9 +202,17 @@ def get_balance():
     return usdt
 
 def calculate_amount(usdt, current_price):
-    amount = usdt / current_price / 3
-    amount = int(amount) - 1
-    return amount
+    if usdt > current_price:
+        amount = usdt / current_price / 3
+        amount = int(amount) - 1
+        return amount
+    elif usdt < current_price:
+        amount = current_price / usdt/ 3
+        amount = int(amount) - 1
+        return amount
+    else:
+        amount = 0
+        return amount
 
 def my_position():
     balance = binance.fetch_balance()
@@ -266,6 +274,12 @@ if __name__ == "__main__":
     
     amount = calculate_amount(usdt, current_price)
     print("얼마나지를까?",amount)
+    time.sleep(1)
+
+    binance.create_market_buy_order(
+        symbol=symbol,
+        amount=25,
+    )
     time.sleep(1)
 
     position = my_position()
