@@ -47,6 +47,12 @@ def get_ohlc():
 
     return ohlc_df
 
+def get_current_price(df):
+    df = df.tail(1)
+    current_price = df['Close']
+
+    return current_price
+
 def calculate_atr(df):
     # Step 1: Calculate True Range (TR)
     df['High-Low'] = df['High'] - df['Low']
@@ -149,10 +155,11 @@ def position_decision(df, crossover, rsi):
 
 if __name__ == "__main__":
     ohlc_df = get_ohlc()
+    current_price = get_current_price(ohlc_df)
     ohlc_df = calculate_atr(ohlc_df)
     ohlc_df = calculate_atr_trailing_stop(ohlc_df) # Data Frame
     rsi = calculate_rsi(ohlc_df) # Most Recent Value
-
+    
     crossover = if_crossover(ohlc_df)
     #  0 : Initial Value, No Crossover 
     #  1 : Upward Crossover
@@ -167,4 +174,5 @@ if __name__ == "__main__":
 
     print(ohlc_df)
     print(decision)
+    print(current_price)
 

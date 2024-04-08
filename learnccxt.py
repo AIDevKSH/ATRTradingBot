@@ -25,21 +25,23 @@ def get_balance():
     return balance
     # {'free': 49.1918193, 'used': 0.0, 'total': 49.20165886}
 
-def enter_long():
+def post_leverage():
     resp = binance.fapiprivate_post_leverage({
         'symbol': symbol,
         'leverage': leverage,
     })
 
+    return resp
+
+def enter_long():
     order = binance.create_market_buy_order(
         symbol=symbol,
         amount=25,
     )
     
-    return resp, order
+    return order
 
 def close_long():
-
     order2 = binance.create_market_sell_order(
         symbol=symbol,
         amount=25,
@@ -69,7 +71,8 @@ if __name__ == "__main__":
     
     print("\n\n\n")
 
-    resp, order = enter_long()
+    resp = post_leverage() # 한 번만 실행하면 됨 
+    order = enter_long()
     print(resp)
     print(order)
     time.sleep(2)
