@@ -42,7 +42,7 @@ def enter_long():
 
     order = binance.create_market_buy_order(
         symbol=symbol,
-        amount=6,
+        amount=25,
     )
     
     return resp, resp2, order
@@ -51,7 +51,7 @@ def close_long():
 
     order2 = binance.create_market_sell_order(
         symbol=symbol,
-        amount=6,
+        amount=25,
     )
     
     return order2
@@ -63,6 +63,9 @@ def my_position():
     for position in positions:
         if position["symbol"] == symbol:
             return position
+
+# binance {"code":-4164,"msg":"Order's notional must be no smaller than 5 (unless you choose reduce only)."}
+# 5 Dollar
 
 if __name__ == "__main__":
 
