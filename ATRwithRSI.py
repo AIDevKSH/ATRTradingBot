@@ -6,7 +6,6 @@ import os
 load_dotenv()
 import ccxt 
 import time
-import json
 
 api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
@@ -25,13 +24,6 @@ symbol = 'BNBUSDT'
 interval = '30m'
 leverage = 1
 
-def get_balance():
-    balance = binance.fetch_balance(params={"type": "future"})
-    free_balance = balance['free']
-    usdt = free_balance['USDT']
-
-    return usdt
-
 def post_leverage():
     resp = binance.fapiprivate_post_leverage({
         'symbol': symbol,
@@ -39,15 +31,6 @@ def post_leverage():
     })
 
     return resp
-
-def my_position():
-    balance = binance.fetch_balance()
-    positions = balance['info']['positions']
-
-    for position in positions:
-        if position["symbol"] == symbol:
-            return position
-            # type : json
 
 def get_ohlc():
     # Calculate start and end time for the query
@@ -190,37 +173,101 @@ def position_decision(df, crossover, rsi):
 
     return position
 
+def chart_analysis(): 
+        ohlc_df = get_ohlc()
+        
+        ohlc_df = calculate_atr(ohlc_df)
+        ohlc_df = calculate_atr_trailing_stop(ohlc_df) # Data Frame
+        rsi = calculate_rsi(ohlc_df) # Most Recent Value
+        
+        crossover = if_crossover(ohlc_df)
+        #  0 : Initial Value, No Crossover 
+        #  1 : Upward Crossover
+        # -1 : Downward Crossover
+
+        decision = position_decision(ohlc_df, crossover, rsi)
+        #  0 : Hold 
+        #  1 : Enter Long  Position, Close Short Position
+        # -1 : Enter Short Position, Close Long Position
+        #  2 : Close Long  Positon
+        # -2 : Close Short Position
+
+        return ohlc_df, decision
+
+def get_balance():
+    balance = binance.fetch_balance(params={"type": "future"})
+    free_balance = balance['free']
+    usdt = free_balance['USDT']
+
+    return usdt
+
+def calculate_amount(usdt, current_price):
+    amount = usdt / current_price / 3
+    amount = int(amount) - 1
+    return amount
+
+def my_position():
+    balance = binance.fetch_balance()
+    positions = balance['info']['positions']
+
+    for position in positions:
+        if position["symbol"] == symbol:
+            return position
+            # type : json
+
+def if_trade(decision):
+    if decision == 1:
+        # 숏 있으면 종료
+        # 롱 진입
+        print("롱")
+    elif decision == -1:
+        # 롱 있으면 종료
+        # 숏 진입
+        print("숏")
+    elif decision == 2:
+        # 롱 종료
+        print("롱 종료")
+    elif decision == -2:
+        # 숏 종료
+        print("숏 종료")
+    else:
+        pass
+
 if __name__ == "__main__":
+    # Once
     resp = post_leverage()
+    time.sleep(1)
 
-    ohlc_df = get_ohlc()
-    current_price = get_current_price(ohlc_df)
-    ohlc_df = calculate_atr(ohlc_df)
-    ohlc_df = calculate_atr_trailing_stop(ohlc_df) # Data Frame
-    rsi = calculate_rsi(ohlc_df) # Most Recent Value
-    
-    crossover = if_crossover(ohlc_df)
-    #  0 : Initial Value, No Crossover 
-    #  1 : Upward Crossover
-    # -1 : Downward Crossover
 
-    decision = position_decision(ohlc_df, crossover, rsi)
+    # Every 30 Min
+    ohlc_df, decision = chart_analysis()
+    time.sleep(1)
+    #  decision value
     #  0 : Hold 
     #  1 : Enter Long  Position, Close Short Position
     # -1 : Enter Short Position, Close Long Position
     #  2 : Close Long  Positon
     # -2 : Close Short Position
+    if_trade(decision)
+    print("\n\n")
+    time.sleep(1)
 
-    print(ohlc_df)
-    print(decision)
-    print(current_price)
+    
 
-    usdt = get_balance()
-    print(usdt)
-    time.sleep(2)
 
-    print("\n\n\n")
+
+    # 거래를 할 때만 실행
+    current_price = get_current_price(ohlc_df) # Close
+    print("도지가격",current_price)
+    time.sleep(1)
+
+    usdt = get_balance() # My Account
+    print("딸라",usdt)
+    
+    amount = calculate_amount(usdt, current_price)
+    print("얼마나지를까?",amount)
+    time.sleep(1)
 
     position = my_position()
-    print(position)
-    time.sleep(2)
+    print("내포지션확인용 ",position)
+    print("\n\n")
