@@ -30,7 +30,7 @@ def get_balance():
 def enter_long():
     # 레버리지 롱 포지션
     
-    resp = binance.fapiPrivate_post_leverage({
+    resp = binance.fapiprivate_post_leverage({
         'symbol': symbol,
         'leverage': leverage,
     })
@@ -69,7 +69,8 @@ if __name__ == "__main__":
     print("포지션 진입")
 
     balance = get_balance()
-    print(balance)
+    print(balance['USDT'])
+    print(balance['DOGE'])
     time.sleep(2)
     
     resp, resp2, order = enter_long()
