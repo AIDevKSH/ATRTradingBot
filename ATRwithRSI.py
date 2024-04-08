@@ -28,8 +28,9 @@ leverage = 1
 def get_balance():
     balance = binance.fetch_balance(params={"type": "future"})
     free_balance = balance['free']
+    usdt = free_balance['USDT']
 
-    return free_balance
+    return usdt
 
 def post_leverage():
     resp = binance.fapiprivate_post_leverage({
@@ -214,8 +215,8 @@ if __name__ == "__main__":
     print(decision)
     print(current_price)
 
-    free_balance = get_balance()
-    print(free_balance)
+    usdt = get_balance()
+    print(usdt)
     time.sleep(2)
 
     print("\n\n\n")
