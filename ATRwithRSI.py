@@ -324,9 +324,8 @@ def schedule_tasks(my_function):
     schedule.every().hour.at(":30").do(my_function)
 
 if __name__ == "__main__":
-    resp = post_leverage() # Once
-
-    schedule_tasks(every_30_min)  # 초기 스케줄 등록
+    resp = post_leverage()
+    schedule_tasks(every_30_min)
 
     while True:
         schedule.run_pending()
