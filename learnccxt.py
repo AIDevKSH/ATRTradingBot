@@ -55,8 +55,8 @@ def my_position():
         if position["symbol"] == symbol:
             position_json = {
             'symbol_name': position['symbol'],
-            'average_price': float(position['info']['avgPrice']),
-            'purchase_quantity': float(position['info']['origQty']),
+            'average_price': float(position['avgPrice']),
+            'purchase_quantity': float(position['origQty']),
             'purchase_time': position['datetime']
             }
             return position_json
