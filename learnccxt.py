@@ -70,7 +70,6 @@ if __name__ == "__main__":
 
     balance = get_balance()
     print(balance['USDT'])
-    print(balance['DOGE'])
     time.sleep(2)
     
     resp, resp2, order = enter_long()
