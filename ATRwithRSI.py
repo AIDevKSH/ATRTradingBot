@@ -142,16 +142,6 @@ def position_decision(df, crossover, rsi):
 
     return position
 
-def my_balance(client, symbol):
-    # Convert time to milliseconds (Binance API requires timestamps in milliseconds)
-    current_time = datetime.now()
-    current_timestamp = int(current_time.timestamp() * 1000)
-
-    # 계좌 정보 불러오기
-    account_info = client.futures_account_balance(timestamp=current_timestamp)
-
-    print(account_info)
-
 if __name__ == "__main__":
     ohlc_df = get_ohlc()
     ohlc_df = calculate_atr(ohlc_df)
@@ -166,4 +156,3 @@ if __name__ == "__main__":
     print(ohlc_df)
     print(decision)
 
-    
