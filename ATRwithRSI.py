@@ -8,6 +8,7 @@ import ccxt
 import time
 import warnings
 warnings.filterwarnings('ignore')
+import schedule
 
 api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
@@ -31,22 +32,18 @@ def post_leverage():
         'symbol': symbol,
         'leverage': leverage,
     })
-
+    time.sleep(0.5)
     return resp
 
 def get_ohlc():
-    # Calculate start and end time for the query
     end_time = datetime.now()
     start_time = end_time - timedelta(days=14)
 
-    # Convert time to milliseconds (Binance API requires timestamps in milliseconds)
     start_timestamp = int(start_time.timestamp() * 1000)
     end_timestamp = int(end_time.timestamp() * 1000)
 
-    # Request historical kline data
     klines = client.get_historical_klines(symbol, interval, start_timestamp, end_timestamp)
 
-    # Extract OHLCV data (Open, High, Low, Close, Volume)
     ohlc_data = []
     for kline in klines:
         timestamp = datetime.fromtimestamp(kline[0] / 1000).strftime('%Y-%m-%d %H:%M:%S')
@@ -57,15 +54,11 @@ def get_ohlc():
         volume = float(kline[5])
         ohlc_data.append([timestamp, open_price, high_price, low_price, close_price, volume])
 
-    # print(ohlc_data)
-
-    # Assuming ohlc_data is your list of OHLCV data
     ohlc_df = pd.DataFrame(ohlc_data, columns=['Timestamp', 'Open', 'High', 'Low', 'Close', 'Volume'])
 
-    # Convert 'Timestamp' column to datetime type
     ohlc_df['Timestamp'] = pd.to_datetime(ohlc_df['Timestamp'])
 
-    # print(ohlc_df)
+    time.sleep(0.5)
 
     return ohlc_df
 
@@ -76,17 +69,14 @@ def get_current_price(df):
     return current_price
 
 def calculate_atr(df):
-    # Step 1: Calculate True Range (TR)
     df['High-Low'] = df['High'] - df['Low']
     df['High-PreviousClose'] = abs(df['High'] - df['Close'].shift(1))
     df['Low-PreviousClose'] = abs(df['Low'] - df['Close'].shift(1))
     df['TrueRange'] = df[['High-Low', 'High-PreviousClose', 'Low-PreviousClose']].max(axis=1)
 
-    # Step 2: Calculate Average True Range (ATR)
-    period = 14  # Change this to your desired period
+    period = 14
     df['ATR'] = df['TrueRange'].rolling(period).mean()
 
-    # Drop temporary columns
     df.drop(['High-Low', 'High-PreviousClose', 'Low-PreviousClose', 'TrueRange'], axis=1, inplace=True)
     
     return df
@@ -102,7 +92,6 @@ def calculate_rsi(df):
     return rsi
 
 def calculate_atr_trailing_stop(df):
-    # df = df.tail(10)
     atr_trailing_stop = pd.Series(index=df.index)
 
     for i in range(1, len(df)):
@@ -194,13 +183,17 @@ def chart_analysis():
         #  2 : Close Long  Positon
         # -2 : Close Short Position
 
-        return ohlc_df, decision
+        print(ohlc_df.tail(1))
+        print("\n")
+        print("RSI :",rsi)
+
+        return decision, ohlc_df
 
 def get_balance():
     balance = binance.fetch_balance(params={"type": "future"})
     free_balance = balance['free']
     usdt = free_balance['USDT']
-
+    time.sleep(0.5)
     return usdt
 
 def calculate_amount(usdt, current_price):
@@ -260,58 +253,81 @@ def buy(amount):
         symbol=symbol,
         amount=amount,
     )
-    time.sleep(1)
+    time.sleep(0.5)
 
 def sell(amount):
     binance.create_market_sell_order(
         symbol=symbol,
         amount=amount,
     )
-    time.sleep(1)
+    time.sleep(0.5)
 
-def if_trade(decision):
-    if_position, prev_amount, amount = before_trade(ohlc_df)
+def if_trade(decision, ohlc_df):
     if decision == 0:
         return
     
     if_position, prev_amount, amount = before_trade(ohlc_df)
 
+    #  decision Value
+    #  0 : Hold 
+    #  1 : Enter Long  Position, Close Short Position (If I have)
+    # -1 : Enter Short Position, Close Long Position  (If I have)
+    #  2 : Close Long  Positon   (If I have)
+    # -2 : Close Short Position  (If I have)
+
+    #  if_position Value
+    #  0 : Initial Value, Have No Position
+    #  1 : Prev Positon is Long
+    # -1 : Prev Position is Short
+
+    # decision == 1
     if decision == 1 and if_position == -1:
         buy(prev_amount)
         buy(amount)
 
-    elif decision == 1 and if_position != -1:
+    elif decision == 1 and if_position != -1 and if_position != 1:
         buy(amount)
 
+    elif decision == 1 and if_position == 1:
+        return
+
+    # decision == -1
     elif decision == -1 and if_position == 1:
         sell(prev_amount)
         sell(amount)
 
-    elif decision == -1 and if_position != 1:
+    elif decision == -1 and if_position != 1 and if_position != -1:
         sell(amount)
 
-    elif decision == 2:
+    elif decision == -1 and if_position == -1 :
+        return
+
+    # decision == 2
+    elif decision == 2 and if_position == 1:
         sell(amount)
 
-    elif decision == -2:
+    # decision == -2
+    elif decision == -2 and if_position == -1:
         buy(amount)
+    
+    else:
+        return
 
-def my_status():
-    balance = binance.fetch_balance()
-    positions = balance['info']['positions']
+def every_30_min():
+        time.sleep(10)
+        decision, ohlc_df = chart_analysis()
+        time.sleep(0.5)
+        if_trade(decision, ohlc_df)
 
-    for position in positions:
-        if position["symbol"] == symbol:
-            return position
+def schedule_tasks(my_function):
+    schedule.every().hour.at(":00").do(my_function)
+    schedule.every().hour.at(":30").do(my_function)
 
 if __name__ == "__main__":
     resp = post_leverage() # Once
-    time.sleep(1)
 
-    # Every 30 Min
-    ohlc_df, decision = chart_analysis()
-    time.sleep(1)
-    if_trade(decision)
+    schedule_tasks(every_30_min)  # 초기 스케줄 등록
 
-    position = my_status()
-    print(position)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
