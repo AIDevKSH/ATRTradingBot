@@ -53,7 +53,14 @@ def my_position():
 
     for position in positions:
         if position["symbol"] == symbol:
-            return position
+            position_json = {
+            'symbol_name': position['symbol'],
+            'average_price': float(position['info']['avgPrice']),
+            'purchase_quantity': float(position['info']['origQty']),
+            'purchase_time': position['datetime']
+            }
+            return position_json
+            # type : json
 
 # binance {"code":-4164,"msg":"Order's notional must be no smaller than 5 (unless you choose reduce only)."}
 # 5 Dollar
@@ -72,8 +79,8 @@ if __name__ == "__main__":
 
     time.sleep(2)
 
-    position = my_position()
-    print(position)
+    position_json = my_position()
+    print(position_json)
 
     time.sleep(2)
 
@@ -83,10 +90,10 @@ if __name__ == "__main__":
 
     time.sleep(2)
 
-    position = my_position()
-    print(position)
+    position_json = my_position()
+    print(position_json)
 
     time.sleep(2)
 
     balance = get_balance()
-    print(balance)
+    print(balance['USDT'])
