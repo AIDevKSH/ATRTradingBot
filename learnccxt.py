@@ -35,10 +35,10 @@ def enter_long():
         'leverage': leverage,
     })
 
-    resp2 = binance.fapiprivate_post_margintype({
-        'symbol': symbol,
-        'marginType': margin_type,
-    })
+    # resp2 = binance.fapiprivate_post_margintype({
+    #     'symbol': symbol,
+    #     'marginType': margin_type,
+    # })
 
     order = binance.create_market_buy_order(
         symbol=symbol,
