@@ -46,6 +46,8 @@ def get_ohlc():
         end_time = datetime.now()
         start_time = end_time - timedelta(days=14)
 
+        print(end_time.strftime("%Y-%m-%d %H:%M"))
+
         start_timestamp = int(start_time.timestamp() * 1000)
         end_timestamp = int(end_time.timestamp() * 1000)
 
@@ -379,6 +381,18 @@ def if_trade(decision, ohlc_df):
 
 def every_30_min():
         time.sleep(10)
+
+        ohlc_df = None
+        rsi = 0
+        crossover = 0
+        current_price = 0
+        usdt = 0
+        amount = 0
+        decision = 0
+        position = 0
+        if_position = 0
+        prev_amount = 0
+
         decision, ohlc_df = chart_analysis()
         time.sleep(0.5)
         if_trade(decision, ohlc_df)
