@@ -142,7 +142,7 @@ def position_decision(df, crossover, rsi):
 
     return position
 
-def my_balance():
+def my_balance(client, symbol):
     # Convert time to milliseconds (Binance API requires timestamps in milliseconds)
     current_time = datetime.now()
     current_timestamp = int(current_time.timestamp() * 1000)
