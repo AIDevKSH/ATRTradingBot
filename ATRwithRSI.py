@@ -26,7 +26,7 @@ interval = '30m'
 leverage = 1
 
 def get_balance():
-    balance_json = binance.fetch_balance(params={"type": "future"})
+    balance = binance.fetch_balance(params={"type": "future"})
     free_balance = balance['free']
 
     return free_balance
