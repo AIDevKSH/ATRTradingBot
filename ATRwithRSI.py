@@ -6,6 +6,8 @@ import os
 load_dotenv()
 import ccxt 
 import time
+import warnings
+warnings.filterwarnings('ignore')
 
 api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
@@ -220,8 +222,14 @@ def my_position():
 
     for position in positions:
         if position["symbol"] == symbol:
-            return position
-            # type : json
+            if float(position['positionAMT']) != 0:
+                if_position = True
+                prev_amount = float(position['positionAMT'])
+            else:
+                if_position = False
+                prev_amount = 0
+
+            return if_position, prev_amount
 
 def if_trade(decision):
     if decision == 1:
@@ -257,43 +265,49 @@ if __name__ == "__main__":
     #  2 : Close Long  Positon
     # -2 : Close Short Position
     if_trade(decision)
-    print("\n\n")
+    print("\n")
     time.sleep(1)
-
-    
-
-
 
     # 거래를 할 때만 실행
     current_price = get_current_price(ohlc_df) # Close
     print("도지가격",current_price)
-    time.sleep(1)
+    time.sleep(0.5)
 
     usdt = get_balance() # My Account
     print("딸라",usdt)
+    time.sleep(0.5)
     
     amount = calculate_amount(usdt, current_price)
     print("얼마나지를까?",amount)
-    time.sleep(1)
+    print("\n")
+    time.sleep(0.5)
 
+    if_position, prev_amount = my_position()
+    print("나포지션있음? :",if_position)
+    print("몇개샀더라 :",prev_amount)
+    print("\n")
+    time.sleep(0.5)
+    
     binance.create_market_buy_order(
         symbol=symbol,
         amount=25,
     )
-    time.sleep(1)
+    time.sleep(0.5)
 
-    position = my_position()
-    print("내포지션확인용 ",position)
-    print("\n\n")
-    time.sleep(5)
+    if_position, prev_amount = my_position()
+    print("나포지션있음? :",if_position)
+    print("몇개샀더라 :",prev_amount)
+    print("\n")
+    time.sleep(0.5)
 
     binance.create_market_sell_order(
         symbol=symbol,
         amount=25,
     )
+    time.sleep(0.5)
 
-    time.sleep(1)
-
-    position = my_position()
-    print("내포지션확인용 ",position)
-    print("\n\n")
+    if_position, prev_amount = my_position()
+    print("나포지션있음? :",if_position)
+    print("몇개샀더라 :",prev_amount)
+    print("\n")
+    time.sleep(0.5)
