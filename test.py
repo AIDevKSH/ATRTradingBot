@@ -43,7 +43,7 @@ def post_leverage():
 
 def get_ohlc():
     try:
-        end_time = datetime.now()
+        end_time = datetime.now() - timedelta(minutes=30)
         start_time = end_time - timedelta(days=14)
 
         print(end_time.strftime("%Y-%m-%d %H:%M"))
@@ -163,8 +163,9 @@ def if_crossover(df):
         else:
             crossover = 0
 
+        print("crossover :",crossover)
         return crossover
-    
+        
     except Exception as e:
         print("if_crossover() Exception", e)
 
@@ -180,21 +181,21 @@ def position_decision(df, crossover, rsi):
         atr_trailing_stop = df.iloc[0]['ATR_Trailing_Stop']
 
         if close > atr_trailing_stop and crossover == 1 and rsi > 55:
-            position = 1
+            decision = 1
         elif close > atr_trailing_stop and crossover == 1 and rsi < 45:
-            position = 1
+            decision = 1
         elif close < atr_trailing_stop and crossover == -1 and rsi > 55:
-            position = -1
+            decision = -1
         elif close < atr_trailing_stop and crossover == -1 and rsi < 45:
-            position = -1
+            decision = -1
         elif close < atr_trailing_stop and crossover == -1 and 45 <= rsi <= 55:
-            position = 2
+            decision = 2
         elif close > atr_trailing_stop and crossover == 1 and 45 <= rsi <= 55:
-            position = -2
+            decision = -2
         else:
-            position = 0
+            decision = 0
 
-        return position
+        return decision
     
     except Exception as e:
         print("position_decision() Exception", e)
