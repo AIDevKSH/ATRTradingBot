@@ -118,6 +118,7 @@ def calculate_atr_trailing_stop(df):
         df = df.tail(50)
 
         df['ATR_Trailing_Stop'] = df['Close']
+        df = df.reset_index()
 
         for i in range(len(df)):
             n_loss = 2 * df.iloc[i]['ATR']
