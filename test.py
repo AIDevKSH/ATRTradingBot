@@ -116,12 +116,11 @@ def calculate_rsi(df):
 
 def calculate_atr_trailing_stop(df):
     try:
-        atr_trailing_stop = pd.Series(index=df.index)
-        df['ATR_Trailing_Stop'] = df['Close'].iloc[0]
-        print(df)
+        df['ATR_Trailing_Stop'] = None
+        df.loc[0, 'ATR_Trailing_Stop'] = df.loc[0, 'Close']
         
         for i in range(1, len(df)):
-            n_loss = df.iloc[i]['ATR'] * 2
+            n_loss = 2 * df.iloc[i]['ATR']
             close = df.iloc[i]['Close']
             prev_close = df.iloc[i - 1]['Close']
             prev_atr_trailing_stop = df.iloc[i - 1]['ATR_Trailing_Stop']
