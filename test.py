@@ -380,7 +380,7 @@ def if_trade(decision, ohlc_df):
         print("if_trade() Exception", e)
 
 def test():
-        time.sleep(10)
+        print("Symbol :",symbol,"")
 
         ohlc_df = None
         rsi = 0
