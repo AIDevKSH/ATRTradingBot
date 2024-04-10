@@ -114,6 +114,16 @@ def calculate_rsi(df):
         print("calculate_rsi() Exception", e)
 
 def calculate_atr_trailing_stop(df):
+
+    """
+    iff(close > nz(xATRTrailingStop[1], 0) and close[1] > nz(xATRTrailingStop[1], 0), 
+      max(nz(xATRTrailingStop[1]), close - nLoss),
+    iff(close < nz(xATRTrailingStop[1], 0) and close[1] < nz(xATRTrailingStop[1], 0), 
+      min(nz(xATRTrailingStop[1]), close + nLoss), 
+    iff(close > nz(xATRTrailingStop[1], 0), 
+      close - nLoss, close + nLoss)))
+    """
+    
     try:
         df = df.tail(50)
 
@@ -132,7 +142,7 @@ def calculate_atr_trailing_stop(df):
                 df.at[i, 'ATR_Trailing_Stop'] = min(prev_atr_trailing_stop, close + n_loss)
             elif close > prev_atr_trailing_stop:
                 df.at[i, 'ATR_Trailing_Stop'] = close - n_loss
-            else:
+            elif close <= prev_atr_trailing_stop:
                 df.at[i, 'ATR_Trailing_Stop'] = close + n_loss
 
         print(df)
