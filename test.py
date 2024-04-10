@@ -43,7 +43,7 @@ def post_leverage():
 
 def get_ohlc():
     try:
-        end_time = datetime.now() - timedelta(minutes=30)
+        end_time = datetime.now()
         start_time = end_time - timedelta(days=14)
 
         print(end_time.strftime("%Y-%m-%d %H:%M"))
@@ -118,23 +118,22 @@ def calculate_atr_trailing_stop(df):
     try:
         atr_trailing_stop = pd.Series(index=df.index)
         df['ATR_Trailing_Stop'] = df['Close'].iloc[0]
+        print(df)
         
         for i in range(1, len(df)):
             n_loss = df.iloc[i]['ATR'] * 2
             close = df.iloc[i]['Close']
             prev_close = df.iloc[i - 1]['Close']
-            prev_atr_trailing_stop = atr_trailing_stop.iloc[i - 1]
+            prev_atr_trailing_stop = df.iloc[i - 1]['ATR_Trailing_Stop']
 
             if close > prev_atr_trailing_stop and prev_close > prev_atr_trailing_stop:
-                atr_trailing_stop.iloc[i] = max(prev_atr_trailing_stop, close - n_loss)
+                df.at[i, 'ATR_Trailing_Stop'] = max(prev_atr_trailing_stop, close - n_loss)
             elif close < prev_atr_trailing_stop and prev_close < prev_atr_trailing_stop:
-                atr_trailing_stop.iloc[i] = min(prev_atr_trailing_stop, close + n_loss)
+                df.at[i, 'ATR_Trailing_Stop'] = min(prev_atr_trailing_stop, close + n_loss)
             elif close > prev_atr_trailing_stop:
-                atr_trailing_stop.iloc[i] = close - n_loss
+                df.at[i, 'ATR_Trailing_Stop'] = close - n_loss
             else:
-                atr_trailing_stop.iloc[i] = close + n_loss
-
-        df['ATR_Trailing_Stop'] = atr_trailing_stop
+                df.at[i, 'ATR_Trailing_Stop'] = close + n_loss
 
         df = df.tail(20)
 
@@ -221,7 +220,7 @@ def chart_analysis():
         #  2 : Close Long  Positon
         # -2 : Close Short Position
 
-        print(ohlc_df.tail(5))
+        print(ohlc_df.tail(10))
         print("RSI :",rsi)
         print("decision :",decision)
 
