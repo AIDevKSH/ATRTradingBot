@@ -11,7 +11,7 @@
 2. 바이낸스 선물계좌, api (최소 거래 5 usdt, 항상 시드의 30%만 가지고 거래하므로 15 usdt 이상 보유해야됨.) <br/>
 3. 컴퓨터 (난 EC2 공짜 사용 중) <br/>
 4. pip install pandas python-binance python-dotenv ccxt schedule <br/>
-5. .env 파일 생성, BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력
+5. .env 파일 생성, BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/>
 6. nohup python3 trading.py (00분, 30분 마다 반복 실행, 터미널 꺼도됨) | python3 test.py (한 번만 실행) <br/>
 7. 종료 : 컴끄기 아니면 ps -ef | grep python3 trading.py 해당 프로세스의 pid 찾고 kill (pid number) <br/>
 
