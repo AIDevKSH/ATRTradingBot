@@ -7,14 +7,13 @@
 <br/><br/><br/>
 
 <h2>🧑‍💻 사용법</h2>
-1. git clone https://github.com/AIDevKSH/ATRwithRSI  |  cd ATRwithRSI <br/>
-2. 바이낸스 계좌(한 번 거래 시도할 때 $5 이상 필요함. 항상 전체 시드의 30%만 가지고 거래하므로 $15 이상 보유해야됨.) <br/>
-3. 컴퓨터 (난 EC2 사용 중) <br/>
+1. git clone https://github.com/AIDevKSH/ATRwithRSI 다운 받고 cd ATRwithRSI <br/>
+2. 바이낸스 선물계좌, api (최소 거래 5 usdt, 항상 시드의 30%만 가지고 거래하므로 15 usdt 이상 보유해야됨.) <br/>
+3. 컴퓨터 (난 EC2 공짜 사용 중) <br/>
 4. pip install pandas python-binance python-dotenv ccxt schedule <br/>
-5. python3 trading.py (00분, 30분 마다 반복 실행, 터미널 끄면 종료) | python3 test.py (한 번만 실행) <br/>
-6. EC2에서 백그라운드로 실행(터미널 꺼도됨) : nohup python3 trading.py <br/>
-7. 로그 보기 : tail -f nohup.out <br/>
-8. 종료 : 컴끄기 아니면 ps -ef | grep python3 trading.py 해당 프로세스의 pid 찾고 kill (pid number) <br/>
+5. .env 파일 생성, BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력
+6. nohup python3 trading.py (00분, 30분 마다 반복 실행, 터미널 꺼도됨) | python3 test.py (한 번만 실행) <br/>
+7. 종료 : 컴끄기 아니면 ps -ef | grep python3 trading.py 해당 프로세스의 pid 찾고 kill (pid number) <br/>
 
 <br/><br/><br/>
 
