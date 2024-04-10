@@ -8,7 +8,6 @@ import ccxt
 import time
 import warnings
 warnings.filterwarnings('ignore')
-import schedule
 
 api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
@@ -116,11 +115,9 @@ def calculate_rsi(df):
 
 def calculate_atr_trailing_stop(df):
     try:
-        df['ATR_Trailing_Stop'] = None
-        df = df.tail(100)
+        df = df.tail(50)
 
         df['ATR_Trailing_Stop'] = df['Close']
-        print(df.head(5))
 
         for i in range(1, len(df)):
             n_loss = 2 * df.iloc[i]['ATR']
@@ -137,8 +134,7 @@ def calculate_atr_trailing_stop(df):
             else:
                 df.at[i, 'ATR_Trailing_Stop'] = close + n_loss
 
-        df = df.tail(20)
-
+        print(df)
         return df
     
     except Exception as e:
@@ -223,7 +219,7 @@ def chart_analysis():
         #  2 : Close Long  Positon
         # -2 : Close Short Position
 
-        print(ohlc_df.tail(10))
+        print(ohlc_df)
         print("RSI :",rsi)
         print("decision :",decision)
 
