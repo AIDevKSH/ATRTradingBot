@@ -116,26 +116,25 @@ def calculate_rsi(df):
 
 def calculate_atr_trailing_stop(df):
     try:
-        atr_trailing_stop = pd.Series(index=df.index)
+        df = df.tail(100)
+
+        df['ATR_Trailing_Stop'] = df['Close']
+        df = df.reset_index()
 
         for i in range(1, len(df)):
-            n_loss = df.iloc[i]['ATR'] * 2
+            n_loss = 2 * df.iloc[i]['ATR']
             close = df.iloc[i]['Close']
             prev_close = df.iloc[i - 1]['Close']
-            prev_atr_trailing_stop = atr_trailing_stop.iloc[i - 1]
+            prev_atr_trailing_stop = df.iloc[i - 1]['ATR_Trailing_Stop']
 
             if close > prev_atr_trailing_stop and prev_close > prev_atr_trailing_stop:
-                atr_trailing_stop.iloc[i] = max(prev_atr_trailing_stop, close - n_loss)
+                df.at[i, 'ATR_Trailing_Stop'] = max(prev_atr_trailing_stop, close - n_loss)
             elif close < prev_atr_trailing_stop and prev_close < prev_atr_trailing_stop:
-                atr_trailing_stop.iloc[i] = min(prev_atr_trailing_stop, close + n_loss)
+                df.at[i, 'ATR_Trailing_Stop'] = min(prev_atr_trailing_stop, close + n_loss)
             elif close > prev_atr_trailing_stop:
-                atr_trailing_stop.iloc[i] = close - n_loss
-            else:
-                atr_trailing_stop.iloc[i] = close + n_loss
-
-        df['ATR_Trailing_Stop'] = atr_trailing_stop
-
-        df = df.tail(20)
+                df.at[i, 'ATR_Trailing_Stop'] = close - n_loss
+            elif close <= prev_atr_trailing_stop:
+                df.at[i, 'ATR_Trailing_Stop'] = close + n_loss
 
         return df
     
@@ -203,9 +202,9 @@ def chart_analysis():
     try :
         ohlc_df = get_ohlc()
         
+        rsi = calculate_rsi(ohlc_df) # Most Recent Value
         ohlc_df = calculate_atr(ohlc_df)
         ohlc_df = calculate_atr_trailing_stop(ohlc_df) # Data Frame
-        rsi = calculate_rsi(ohlc_df) # Most Recent Value
         
         crossover = if_crossover(ohlc_df)
         #  0 : Initial Value, No Crossover 

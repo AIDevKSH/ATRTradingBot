@@ -125,7 +125,7 @@ def calculate_atr_trailing_stop(df):
     """
     
     try:
-        df = df.tail(50)
+        df = df.tail(100)
 
         df['ATR_Trailing_Stop'] = df['Close']
         df = df.reset_index()
