@@ -23,7 +23,7 @@ binance = ccxt.binance(config={
     }
 })
 
-symbol = 'DOGEUSDT'
+symbol = 'ENAUSDT'
 interval = '30m'
 leverage = 5
 
