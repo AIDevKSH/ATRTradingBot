@@ -118,7 +118,8 @@ def calculate_atr_trailing_stop(df):
     try:
         df['ATR_Trailing_Stop'] = None
         df = df.tail(100)
-        df.loc[0, 'ATR_Trailing_Stop'] = df.loc[0, 'Close']
+        
+        df['ATR_Trailing_Stop'] = df['Close']
         print(df.head(5))
 
         for i in range(1, len(df)):
