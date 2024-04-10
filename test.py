@@ -118,7 +118,7 @@ def calculate_atr_trailing_stop(df):
     try:
         df['ATR_Trailing_Stop'] = None
         df = df.tail(100)
-        
+
         df['ATR_Trailing_Stop'] = df['Close']
         print(df.head(5))
 
@@ -206,9 +206,10 @@ def chart_analysis():
     try :
         ohlc_df = get_ohlc()
         
+        rsi = calculate_rsi(ohlc_df) # Most Recent Value
         ohlc_df = calculate_atr(ohlc_df)
         ohlc_df = calculate_atr_trailing_stop(ohlc_df) # Data Frame
-        rsi = calculate_rsi(ohlc_df) # Most Recent Value
+        
         
         crossover = if_crossover(ohlc_df)
         #  0 : Initial Value, No Crossover 
