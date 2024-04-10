@@ -145,7 +145,6 @@ def calculate_atr_trailing_stop(df):
             elif close <= prev_atr_trailing_stop:
                 df.at[i, 'ATR_Trailing_Stop'] = close + n_loss
 
-        print(df)
         return df
     
     except Exception as e:
