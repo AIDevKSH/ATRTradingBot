@@ -43,7 +43,7 @@ def post_leverage():
 
 def get_ohlc():
     try:
-        end_time = datetime.now()
+        end_time = datetime.now() 
         start_time = end_time - timedelta(days=14)
 
         print(end_time.strftime("%Y-%m-%d %H:%M"))
