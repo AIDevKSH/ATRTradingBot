@@ -26,8 +26,6 @@ symbol = 'ENAUSDT'
 interval = '30m'
 leverage = 5
 
-import time
-
 def post_leverage():
     try:
         resp = binance.fapiprivate_post_leverage({

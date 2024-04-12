@@ -130,7 +130,7 @@ def calculate_atr_trailing_stop(df):
 
 def if_crossover(df):
     try :
-        # crossover
+        #  Crossover
         #  0 : Initial value, No Crossover 
 
         #  1 : Upward Crossover
