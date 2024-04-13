@@ -8,7 +8,7 @@ https://aidevksh.notion.site/ATR-with-EMA-Trading-Bot-d548ef66a42d48908576542077
 <br/><br/><br/>
 
 <h2>🧑‍💻 사용법</h2>
-1. git clone https://github.com/AIDevKSH/ATRTradingBot 🙂 cd ATRwithRSI <br/>
+1. git clone https://github.com/AIDevKSH/ATRTradingBot.git 🙂 cd ATRwithRSI <br/>
 2. 바이낸스 선물계좌, 선물 거래 가능한 api <br/>
 3. 돈 : 최소 거래 5 usdt 이상 필요. 항상 시드의 30%만 가지고 거래하므로 15 usdt 이상 보유해야됨.<br/>
 4. 컴퓨터 (난 EC2 공짜 사용 중) <br/>
