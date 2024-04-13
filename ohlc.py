@@ -208,18 +208,3 @@ def position_decision():
 
 ohlc_df = position_decision()
 current_df = ohlc_df.tail(1)
-
-
-# ohlc.py 실행 시에만 아래 주석 푸세요.
-# trading.py에는 주석 걸어주세요.
-
-# 1. 최근 두 데이터 정보 보기
-# print_df = ohlc_df.tail(2)
-# print("\n", print_df[['Timestamp', 'Open' ,'Close', 'EMA_14', 'ATR_Trailing_Stop', 'Crossover']], "\n")
-
-# 2. 이틀 데이터 중 크로스 오버 한 데이터만 보기
-# crossover_df =  ohlc_df[ohlc_df['Crossover'] != 0]
-# print(crossover_df)
-
-# 3. chart.png와 같은 그래프 출력하기
-# make_plot(ohlc_df)
