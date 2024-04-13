@@ -12,14 +12,34 @@ api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
 client = Client(api_key=api_key, api_secret=api_secret)
 
-symbol = 'ENAUSDT'
+# 종목
+global symbol
+symbol = 'DOGEUSDT'
+# BTC 가격 변동량이 크지 않아서 노잼
+# ENAUSDT 같이 신상 코인들이 변동폭이 더 커서 잼슴
+
+# 간격
+global interval
 interval = '15m'
+# 5분 15분 30분 다 해봤는데
+# 15분이 내가 쓰기 좋은듯
+
+# n_loss = ATR * loss_value
+# 종가에 n_loss 더하거나 빼거나 해서 트레일링 스탑 구함
+loss_value = 2
+# loss_value가 낮을수록 트레일링 스탑 민감해짐
+# 너무 민감하면 이거저거 다 배팅해서 오히려 안 좋을지도
+# 너무 둔감하면 거래를 안 함
+# 1, 1.5, 2, 2.5, 3.0, 3.5, 4까지 해봄
+# 그래프 주석 풀고 확인 가능
+
+global current_df
 
 def get_ohlc_hourly():
     try:
         interval = '1h'
         end_time = datetime.now() - timedelta(days=2)
-        start_time = end_time - timedelta(days=12)
+        start_time = end_time - timedelta(days=14)
 
         start_timestamp = int(start_time.timestamp() * 1000)
         end_timestamp = int(end_time.timestamp() * 1000)
@@ -45,7 +65,7 @@ def get_ohlc_hourly():
     except Exception as e:
         print("get_ohlc_hour() Exception:", e)
 
-def get_ohlc_30_min():
+def get_ohlc_half_hourly():
     try:
         end_time = datetime.now()
         start_time = end_time - timedelta(days=2)
@@ -55,7 +75,7 @@ def get_ohlc_30_min():
 
         klines = client.get_historical_klines(symbol, interval, start_timestamp, end_timestamp)
 
-        ohlc_30_min = []
+        ohlc_half_hourly = []
         for kline in klines:
             timestamp = datetime.fromtimestamp(kline[0] / 1000).strftime('%Y-%m-%d %H:%M:%S')
             open_price = float(kline[1])
@@ -63,23 +83,22 @@ def get_ohlc_30_min():
             low_price = float(kline[3])
             close_price = float(kline[4])
             volume = float(kline[5])
-            ohlc_30_min.append([timestamp, open_price, high_price, low_price, close_price, volume])
+            ohlc_half_hourly.append([timestamp, open_price, high_price, low_price, close_price, volume])
 
-        ohlc_30_min = pd.DataFrame(ohlc_30_min, columns=['Timestamp', 'Open', 'High', 'Low', 'Close', 'Volume'])
+        ohlc_half_hourly = pd.DataFrame(ohlc_half_hourly, columns=['Timestamp', 'Open', 'High', 'Low', 'Close', 'Volume'])
 
-        ohlc_30_min['Timestamp'] = pd.to_datetime(ohlc_30_min['Timestamp'])
+        ohlc_half_hourly['Timestamp'] = pd.to_datetime(ohlc_half_hourly['Timestamp'])
 
-        print(end_time.strftime("%Y-%m-%d %H:%M"))
-
-        return ohlc_30_min
+        return ohlc_half_hourly
     
     except Exception as e:
-        print("get_ohlc_30_min() Exception:", e)
+        print("get_ohlc_half_hourly() Exception:", e)
 
 def get_ohlc():
     ohlc_hour = get_ohlc_hourly()
-    ohlc_30_min = get_ohlc_30_min()
-    ohlc_df = pd.concat([ohlc_hour, ohlc_30_min])
+    ohlc_half_hourly = get_ohlc_half_hourly()
+    ohlc_df = pd.concat([ohlc_hour, ohlc_half_hourly])
+    ohlc_df['EMA_14'] = ohlc_df['Close'].ewm(span=14, min_periods=0, adjust=False).mean()
     return ohlc_df
 
 def calculate_atr(df):
@@ -107,7 +126,7 @@ def calculate_atr_trailing_stop(df):
         df = df.reset_index()
 
         for i in range(1, len(df)):
-            n_loss = 2 * df.iloc[i]['ATR']
+            n_loss = loss_value * df.iloc[i]['ATR']
             close = df.iloc[i]['Close']
             prev_close = df.iloc[i - 1]['Close']
             prev_atr_trailing_stop = df.iloc[i - 1]['ATR_Trailing_Stop']
@@ -134,12 +153,12 @@ def if_crossover(df):
         #  0 : Initial value, No Crossover 
 
         #  1 : Upward Crossover
-        # Enter Long Position, Close Short Position
+        # Bull Signal
         # prev_close <= prev_atr_trailing_stop and open >= atr_trailing_stop
         # prev_open <= prev_atr_trailing_stop and open >= atr_trailing_stop
 
         # -1 : Downward Crossover
-        # Enter Short Position, Close Enter Position
+        # Bear Signal
         # prev_close >= prev_atr_trailing_stop and open <= atr_trailing_stop
         # prev_open >= prev_atr_trailing_stop and open <= atr_trailing_stop
 
@@ -167,19 +186,33 @@ def if_crossover(df):
 
 def make_plot(ohlc_df):
     ohlc_df.set_index('Timestamp', inplace=True)
-
     
     ap = mpf.make_addplot(ohlc_df['ATR_Trailing_Stop'], color='blue')
+    ap2 = mpf.make_addplot(ohlc_df['EMA_14'], color='orange')
     
-    mpf.plot(ohlc_df, type='candle', style='charles', title='Candlestick Chart with ATR Trailing Stop',
-             ylabel='Price', volume=False, addplot=[ap],
-             figratio=(16, 9), figsize=(14, 7), xrotation=15)
+    mpf.plot(ohlc_df, type='candle', style='charles', title='ATR Trailing Stop(Blue) EMA 14(Orange)',
+             ylabel='Price', volume=True, addplot=[ap, ap2],
+             figratio=(16, 9), figsize=(14, 7), xrotation=0)
     
 def position_decision():
-    ohlc_df = get_ohlc()
-    ohlc_df  = calculate_atr(ohlc_df)
-    ohlc_df = calculate_atr_trailing_stop(ohlc_df)
-    ohlc_df = if_crossover(ohlc_df)
-    # crossover_df =  ohlc_df[ohlc_df['Crossover'] != 0]
-    # print(crossover_df)
-    # make_plot(ohlc_df)
+    df = get_ohlc()
+    df  = calculate_atr(df)
+    df = calculate_atr_trailing_stop(df)
+    df = if_crossover(df)
+
+    return df
+
+
+ohlc_df = position_decision()
+print_df = ohlc_df.tail(2)
+current_df = ohlc_df.tail(1)
+
+print("\n", print_df[['Timestamp', 'Open' ,'Close', 'EMA_14', 'ATR_Trailing_Stop', 'Crossover']], "\n")
+
+# crossover_df =  ohlc_df[ohlc_df['Crossover'] != 0]
+# print(crossover_df)
+# 크로스오버 한 가격 보려면 이거 주석 푸셈요
+
+# make_plot(ohlc_df)
+# 차트 보려면 이거 주석 푸셈요
+# 근데 trading.py 실행할 때는 다시 거셈요
