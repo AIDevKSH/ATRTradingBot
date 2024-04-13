@@ -12,6 +12,9 @@ api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
 client = Client(api_key=api_key, api_secret=api_secret)
 
+# ohlc.py 실행 시 맨 아래 함수들 주석 풀어주세요.
+# trading.py 실행하려면 다시 주석 걸어주세요.
+
 # 종목
 global symbol
 symbol = 'DOGEUSDT'
@@ -204,15 +207,19 @@ def position_decision():
 
 
 ohlc_df = position_decision()
-print_df = ohlc_df.tail(2)
 current_df = ohlc_df.tail(1)
 
-print("\n", print_df[['Timestamp', 'Open' ,'Close', 'EMA_14', 'ATR_Trailing_Stop', 'Crossover']], "\n")
 
+# ohlc.py 실행 시에만 아래 주석 푸세요.
+# trading.py에는 주석 걸어주세요.
+
+# 1. 최근 두 데이터 정보 보기
+# print_df = ohlc_df.tail(2)
+# print("\n", print_df[['Timestamp', 'Open' ,'Close', 'EMA_14', 'ATR_Trailing_Stop', 'Crossover']], "\n")
+
+# 2. 이틀 데이터 중 크로스 오버 한 데이터만 보기
 # crossover_df =  ohlc_df[ohlc_df['Crossover'] != 0]
 # print(crossover_df)
-# 크로스오버 한 가격 보려면 이거 주석 푸셈요
 
+# 3. chart.png와 같은 그래프 출력하기
 # make_plot(ohlc_df)
-# 차트 보려면 이거 주석 푸셈요
-# 근데 trading.py 실행할 때는 다시 거셈요

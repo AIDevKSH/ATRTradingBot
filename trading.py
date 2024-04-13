@@ -189,7 +189,10 @@ def my_position():
 
 def job() :
     ohlc.position_decision()
-    # return current_df
+    # return ohlc.ohlc_df, ohlc.current_df
+
+    print_df = ohlc.ohlc_df.tail(2)
+    print("\n", print_df[['Timestamp', 'Open' ,'Close', 'EMA_14', 'ATR_Trailing_Stop', 'Crossover']], "\n")
 
     make_decision(ohlc.current_df)
     # Trading
