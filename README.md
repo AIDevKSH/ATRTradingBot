@@ -11,7 +11,7 @@
 2. 바이낸스 선물계좌, 선물 거래 가능한 api <br/>
 3. 돈 : 최소 거래 5 usdt 이상 필요. 항상 시드의 30%만 가지고 거래하므로 15 usdt 이상 보유해야됨.<br/>
 4. 컴퓨터 (난 EC2 공짜 사용 중) <br/>
-5. pip install pandas python-binance python-dotenv ccxt schedule <br/>
+5. pip install pandas python-binance python-dotenv ccxt schedule mplfinance <br/>
 6. .env 파일 생성, BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/>
 7. ohlc.py : 가격 데이터 불러오기, 데이터 전처리, 시각화(주석 풀어야됨) | 선물 거래 안 되는 바이낸스 api도 가능 <br/>
 8. nohup python3 trading.py (15분 마다 반복 실행, 터미널 꺼도됨) |  <br/>
