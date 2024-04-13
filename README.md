@@ -2,7 +2,8 @@
 
 <br/><br/>
 
-<h2>개발 과정 및 자세한 설명 (예정)</h2>
+<h2>개발 과정 및 설명</h2>
+https://aidevksh.notion.site/ATR-with-EMA-Trading-Bot-d548ef66a42d48908576542077b5b13b?pvs=4 <br/>
 
 <br/><br/><br/>
 
