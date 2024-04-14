@@ -14,9 +14,10 @@ https://aidevksh.notion.site/ATR-with-EMA-Trading-Bot-d548ef66a42d48908576542077
 4. 컴퓨터 (난 EC2 공짜 사용 중) <br/>
 5. pip install pandas python-binance python-dotenv ccxt schedule mplfinance <br/>
 6. .env 파일 생성, BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/>
-7. ohlc.py : 가격 데이터 불러오기, 데이터 전처리, 시각화(주석 풀어야됨) | 선물 거래 안 되는 바이낸스 api도 가능 <br/>
-8. nohup python3 trading.py (15분 마다 반복 실행, 터미널 꺼도됨) |  <br/>
-9. 종료 : 컴끄기 아니면 "ps -ef | grep python3 trading.py" 해당 프로세스의 pid 찾고 "kill <pid number>" <br/>
+7. visualize.py : 데이터 시각화 (거래x) | 선물 거래 안 되는 바이낸스 api도 가능 <br/>
+8. testapi.py : 거래 잘 되는지 확인하는 파일 <br/>
+9. nohup python3 trading.py (15분 마다 반복 실행, 터미널 꺼도됨) |  <br/>
+10. 종료 : 컴끄기 아니면 "ps -ef | grep python3 trading.py" 해당 프로세스의 pid 찾고 "kill <pid number>" <br/>
 
 <br/><br/><br/>
 
