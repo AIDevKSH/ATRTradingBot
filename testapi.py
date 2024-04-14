@@ -5,7 +5,7 @@ load_dotenv()
 import time
 import ohlc
 
-leverage = 1
+leverage = 5
 symbol = "DOGEUSDT"
 amount = 100
 
