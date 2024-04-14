@@ -12,8 +12,9 @@ ohlc.ohlc_df['Decision'] = 0  # 일단 모든 행에 대해 0으로 초기화
 # 거래 진입 : Crossover == Decision 일 때
 ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == 1) & (ohlc.ohlc_df['Open'] >= ohlc.ohlc_df['EMA_14']), 'Decision'] = 1
 ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == -1) & (ohlc.ohlc_df['Open'] <= ohlc.ohlc_df['EMA_14']), 'Decision'] = -1
+ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == 0), 'Decision'] = 0
 
-# 3. 이틀 데이터 중 크로스 오버 한 데이터만 보기
+# 3. 이틀 데이터 중 크로스오버 한 데이터만 보기
 crossover_df =  ohlc.ohlc_df[ohlc.ohlc_df['Crossover'] != 0]
 print(crossover_df)
 
