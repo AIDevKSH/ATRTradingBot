@@ -218,3 +218,14 @@ def job() :
 if __name__ == "__main__" :
     post_leverage()
     job()
+    amount = 100
+    sell(amount)
+    prev_position, prev_amount = my_position()
+    print("position :", prev_position)
+    print("amount :", prev_amount)
+    time.sleep(5)
+
+    buy(amount)
+    prev_position, prev_amount = my_position()
+    print("position :", prev_position)
+    print("amount :", prev_amount)
