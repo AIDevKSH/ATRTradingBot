@@ -122,60 +122,62 @@ def sell(amount):
         print("sell() Exception", e)
 
 def make_decision(df):
-    open = df.iloc[-1]['Open']
-    ema = df.iloc[-1]['EMA_14']
-    crossover = df.iloc[-1]['Crossover']
+    try :
+        open = df.iloc[-1]['Open']
+        ema = df.iloc[-1]['EMA_14']
+        crossover = df.iloc[-1]['Crossover']
 
-    if crossover == 0 :
-        print("Hold Position")
-        return
+        if crossover == 0 :
+            print("Hold Position")
+            return
 
-    else : 
-        prev_position, prev_amount = my_position()
+        else : 
+            prev_position, prev_amount = my_position()
 
-        print("Prev Position :", prev_position)
-        print("Prev Amount :", prev_amount)
-        print("My Free USDT : ", usdt)
-        print("Amount To Trade :", amount)
+            usdt = get_balance()
+            amount = calculate_amount(usdt, ohlc.current_df)
 
-        #  prev_position Value
-        #  0 : Initial Value, Have No Position
-        #  1 : Prev Positon is Long
-        # -1 : Prev Position is Short
+            print("Prev Position :", prev_position)
+            print("Prev Amount :", prev_amount)
+            print("My Free USDT : ", usdt)
+            print("Amount To Trade :", amount)
 
-        # Enter Long
-        if crossover == 1 and open >= ema :
-            # Close Short
-            if prev_position == -1 :
-                sell(prev_amount)
-                print("Close Short Position")
+            #  prev_position Value
+            #  0 : Initial Value, Have No Position
+            #  1 : Prev Positon is Long
+            # -1 : Prev Position is Short
+
             # Enter Long
-            usdt = get_balance()
-            amount = calculate_amount(usdt, ohlc.current_df)
-            buy(amount)
+            if crossover == 1 and open >= ema :
+                # Close Short
+                if prev_position == -1 :
+                    sell(prev_amount)
+                    print("Close Short Position")
+                # Enter Long
+                buy(amount)
 
-        elif crossover == 1 and open < ema :
-            # Close Short
-            if prev_position == -1 :
-                sell(prev_amount)
-                print("Close Short Position")
+            elif crossover == 1 and open < ema :
+                # Close Short
+                if prev_position == -1 :
+                    sell(prev_amount)
+                    print("Close Short Position")
 
-        # Enter Short
-        elif crossover == -1 and open <= ema :
-            # Close Long
-            if prev_position == 1 :
-                buy(prev_amount)
-                print("Close Long Position")
             # Enter Short
-            usdt = get_balance()
-            amount = calculate_amount(usdt, ohlc.current_df)
-            sell(amount)
+            elif crossover == -1 and open <= ema :
+                # Close Long
+                if prev_position == 1 :
+                    buy(prev_amount)
+                    print("Close Long Position")
+                # Enter Short
+                sell(amount)
 
-        elif crossover == -1 and open > ema :
-            # Close Long
-            if prev_position == 1 :
-                buy(prev_amount)
-                print("Close Long Position")
+            elif crossover == -1 and open > ema :
+                # Close Long
+                if prev_position == 1 :
+                    buy(prev_amount)
+                    print("Close Long Position")
+    except Exception as e:
+        print("make_decision() Exception:", e)
 
 def my_position():
     try :
@@ -209,8 +211,11 @@ def job() :
     ohlc.position_decision()
     # return ohlc.ohlc_df, ohlc.current_df
 
+    ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == 1) & (ohlc.ohlc_df['Open'] >= ohlc.ohlc_df['EMA_14']), 'Decision'] = 1
+    ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == -1) & (ohlc.ohlc_df['Open'] <= ohlc.ohlc_df['EMA_14']), 'Decision'] = -1
+
     print_df = ohlc.ohlc_df.tail(2)
-    print("\n", print_df[['Timestamp', 'Open' ,'Close', 'EMA_14', 'ATR_Trailing_Stop', 'Crossover']], "\n")
+    print("\n", print_df[['Timestamp', 'Open' ,'Close', 'EMA_14', 'Crossover', 'Decision']], "\n")
 
     make_decision(ohlc.current_df)
     # Trading
@@ -218,14 +223,3 @@ def job() :
 if __name__ == "__main__" :
     post_leverage()
     job()
-    amount = 100
-    sell(amount)
-    prev_position, prev_amount = my_position()
-    print("position :", prev_position)
-    print("amount :", prev_amount)
-    time.sleep(5)
-
-    buy(amount)
-    prev_position, prev_amount = my_position()
-    print("position :", prev_position)
-    print("amount :", prev_amount)
