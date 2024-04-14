@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 import time
+import ohlc
 
 leverage = 1
 symbol = "DOGEUSDT"
@@ -85,6 +86,8 @@ def my_position():
 
 if __name__ == "__main__" :
     post_leverage()
+
+    ohlc.position_decision()
 
     sell(30)
     prev_position, prev_amount = my_position()
