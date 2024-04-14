@@ -89,13 +89,13 @@ if __name__ == "__main__" :
 
     ohlc.position_decision()
 
-    sell(30)
+    sell(amount)
     prev_position, prev_amount = my_position()
     print("position :", prev_position)
     print("amount :", prev_amount)
     time.sleep(5)
 
-    buy(30)
+    buy(amount)
     prev_position, prev_amount = my_position()
     print("position :", prev_position)
     print("amount :", prev_amount)
