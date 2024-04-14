@@ -12,9 +12,6 @@ api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
 client = Client(api_key=api_key, api_secret=api_secret)
 
-# ohlc.py 실행 시 맨 아래 함수들 주석 풀어주세요.
-# trading.py 실행하려면 다시 주석 걸어주세요.
-
 # 종목
 global symbol
 symbol = 'DOGEUSDT'
