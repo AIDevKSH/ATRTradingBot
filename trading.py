@@ -109,8 +109,6 @@ def make_decision(df):
         return
 
     else : 
-        usdt = get_balance()
-        amount = calculate_amount(usdt, ohlc.current_df)
         prev_position, prev_amount = my_position()
 
         print("Prev Position :", prev_position)
@@ -130,6 +128,8 @@ def make_decision(df):
                 sell(prev_amount)
                 print("Close Short Position")
             # Enter Long
+            usdt = get_balance()
+            amount = calculate_amount(usdt, ohlc.current_df)
             buy(amount)
 
         elif crossover == 1 and open < ema :
@@ -145,6 +145,8 @@ def make_decision(df):
                 buy(prev_amount)
                 print("Close Long Position")
             # Enter Short
+            usdt = get_balance()
+            amount = calculate_amount(usdt, ohlc.current_df)
             sell(amount)
 
         elif crossover == -1 and open > ema :
