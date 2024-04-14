@@ -8,16 +8,17 @@ https://aidevksh.notion.site/ATR-with-EMA-Trading-Bot-d548ef66a42d48908576542077
 <br/><br/><br/>
 
 <h2>🧑‍💻 사용법</h2>
-1. git clone https://github.com/AIDevKSH/ATRTradingBot.git 🙂 cd ATRwithRSI <br/>
-2. 바이낸스 선물계좌, 선물 거래 가능한 api <br/>
-3. 돈 : 최소 거래 5 usdt 이상 필요. 항상 시드의 30%만 가지고 거래하므로 15 usdt 이상 보유해야됨.<br/>
-4. 컴퓨터 (난 EC2 공짜 사용 중) <br/>
-5. pip install pandas python-binance python-dotenv ccxt schedule mplfinance <br/>
-6. .env 파일 생성, BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/>
-7. visualize.py : 데이터 시각화 (거래x) | 선물 거래 안 되는 바이낸스 api도 가능 <br/>
-8. testapi.py : 거래 잘 되는지 확인하는 파일 <br/>
-9. nohup python3 trading.py (15분 마다 반복 실행, 터미널 꺼도됨) |  <br/>
-10. 종료 : 컴끄기 아니면 "ps -ef | grep python3 trading.py" 해당 프로세스의 pid 찾고 "kill <pid number>" <br/>
+1. git clone https://github.com/AIDevKSH/ATRTradingBot.git 🙂 cd ATRwithRSI <br/><br/>
+2. 바이낸스 선물계좌, 선물 거래 가능한 api <br/><br/>
+3. 돈 : 최소 거래 5 usdt 이상 필요. 항상 시드의 30%만 가지고 거래하므로 15 usdt 이상 보유해야됨.<br/><br/>
+4. 컴퓨터 (난 EC2 공짜 사용 중) <br/><br/>
+5. pip install pandas python-binance python-dotenv ccxt schedule mplfinance <br/><br/>
+6. .env 파일 생성, BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/><br/>
+7. visualize.py : 데이터 시각화. 선물 거래 안 되는 바이낸스 api도 가능 <br/><br/>
+8. testapi.py : 선물 거래 작동하는지 확인용 <br/><br/>
+9. testtrading.py : trading.py를 1회 바로 실행하기 <br/><br/>
+10. nohup python3 trading.py : 매 시 00, 15, 30, 45분 마다 실행. 터미널 꺼도됨(백그라운드 실행) <br/><br/>
+11. 종료 : 컴끄기 아니면 "ps -ef | grep python3 trading.py" 해당 프로세스의 pid 찾고 "kill <pid number>" <br/><br/>
 
 <br/><br/><br/>
 
