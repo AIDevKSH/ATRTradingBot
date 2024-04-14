@@ -17,12 +17,31 @@ leverage = 5
 #  1 : Upward Crossover
 # Bull Signal
 # prev_close <= prev_atr_trailing_stop and open >= atr_trailing_stop
-# prev_open <= prev_atr_trailing_stop and open >= atr_trailing_stop
+# prev_open  <= prev_atr_trailing_stop and open >= atr_trailing_stop
 
 # -1 : Downward Crossover
 # Bear Signal
 # prev_close >= prev_atr_trailing_stop and open <= atr_trailing_stop
-# prev_open >= prev_atr_trailing_stop and open <= atr_trailing_stop
+# prev_open  >= prev_atr_trailing_stop and open <= atr_trailing_stop
+
+# ====================================================================#
+
+# Decision 
+
+# Enter Long,  Close Short (If I Have)
+# crossover == 1  and open >= ema
+
+# Enter Short, Close Long  (If I Have)
+# crossover == -1 and open <= ema
+
+# Close Short
+# crossover == 1  and open < ema
+
+# Close Long
+# crossover == -1 and open > ema
+
+# Else
+# Hold Position
 
 api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
@@ -154,7 +173,6 @@ def make_decision(df):
             if prev_position == 1 :
                 buy(prev_amount)
                 print("Close Long Position")
-        
 
 def my_position():
     try :
@@ -183,7 +201,6 @@ def my_position():
             
     except Exception as e:
         print("my_position() Exception", e)
-
 
 def job() :
     ohlc.position_decision()
