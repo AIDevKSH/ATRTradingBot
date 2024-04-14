@@ -11,6 +11,8 @@ import schedule
 # Set Leverage
 leverage = 5
 
+# ==================================================================== #
+
 #  Crossover
 #  0 : Initial value, No Crossover 
 
@@ -24,7 +26,7 @@ leverage = 5
 # prev_close >= prev_atr_trailing_stop and open <= atr_trailing_stop
 # prev_open  >= prev_atr_trailing_stop and open <= atr_trailing_stop
 
-# ====================================================================#
+# ==================================================================== #
 
 # Decision 
 
@@ -42,6 +44,8 @@ leverage = 5
 
 # Else
 # Hold Position
+
+# ==================================================================== #
 
 api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
