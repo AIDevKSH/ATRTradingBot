@@ -217,7 +217,7 @@ def my_position():
         print("my_position() Exception", e)
 
 def job() :
-    time.sleep(5)
+    time.sleep(3)
 
     ohlc.position_decision()
     # This function returns ohlc.ohlc_df, ohlc.current_df
