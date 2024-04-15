@@ -124,9 +124,9 @@ def sell(amount):
 
 def make_decision(df):
     try :
-        open = df.iloc[-1]['Open']
-        ema = df.iloc[-1]['EMA_14']
-        crossover = df.iloc[-1]['Crossover']
+        open = df.iloc[-2]['Open']
+        ema = df.iloc[-2]['EMA_14']
+        crossover = df.iloc[-2]['Crossover']
 
         if crossover == 0 :
             print("Hold Position")
@@ -154,8 +154,11 @@ def make_decision(df):
                 if prev_position == -1 :
                     sell(prev_amount)
                     print("Close Short Position")
+                elif prev_position == 1 :
+                    return
                 # Enter Long
                 buy(amount)
+                print("Enter Long Position. Amount :", amount)
 
             elif crossover == 1 and open < ema :
                 # Close Short
@@ -169,14 +172,18 @@ def make_decision(df):
                 if prev_position == 1 :
                     buy(prev_amount)
                     print("Close Long Position")
+                elif prev_position == -1 :
+                    return
                 # Enter Short
                 sell(amount)
+                print("Enter Short Position. Amount :", amount)
 
             elif crossover == -1 and open > ema :
                 # Close Long
                 if prev_position == 1 :
                     buy(prev_amount)
                     print("Close Long Position")
+
     except Exception as e:
         print("make_decision() Exception:", e)
 
@@ -212,17 +219,16 @@ def job() :
     time.sleep(5)
 
     ohlc.position_decision()
-    # return ohlc.ohlc_df, ohlc.current_df
+    # This function returns ohlc.ohlc_df, ohlc.current_df
 
     ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == 1) & (ohlc.ohlc_df['Open'] >= ohlc.ohlc_df['EMA_14']), 'Decision'] = 1
     ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == -1) & (ohlc.ohlc_df['Open'] <= ohlc.ohlc_df['EMA_14']), 'Decision'] = -1
     ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == 0), 'Decision'] = 0
 
-    print_df = ohlc.ohlc_df.tail(2)
+    print_df = ohlc.ohlc_df.tail(3)
     print("\n", print_df[['Timestamp', 'Open' ,'Close', 'EMA_14', 'Crossover', 'Decision']], "\n")
 
     make_decision(ohlc.current_df)
-    # Trading
 
 def every_15_minutes():
     schedule.every(15).minutes.do(job)

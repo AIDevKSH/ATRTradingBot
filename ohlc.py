@@ -26,7 +26,7 @@ interval = '15m'
 
 # n_loss = ATR * loss_value
 # 종가에 n_loss 더하거나 빼거나 해서 트레일링 스탑 구함
-loss_value = 2
+loss_value = 1.35
 # loss_value가 낮을수록 트레일링 스탑 민감해짐
 # 너무 민감하면 이거저거 다 배팅해서 오히려 안 좋을지도
 # 너무 둔감하면 거래를 안 함
@@ -166,18 +166,18 @@ def if_crossover(df):
 
         for i in range(1, len(df)):
             prev_close = df.iloc[i-1]['Close']
-            prev_open = df.iloc[i-1]['Open']
+            prev_close = df.iloc[i-1]['Close']
             prev_atr_trailing_stop = df.iloc[i-1]['ATR_Trailing_Stop']
-            open = df.iloc[i]['Open']
+            close = df.iloc[i]['Close']
             atr_trailing_stop = df.iloc[i]['ATR_Trailing_Stop']
 
-            if prev_close <= prev_atr_trailing_stop and open >= atr_trailing_stop :
+            if prev_close <= prev_atr_trailing_stop and close >= atr_trailing_stop :
                 df.at[i, 'Crossover'] = 1
-            elif prev_open <= prev_atr_trailing_stop and open >= atr_trailing_stop :
+            elif prev_close <= prev_atr_trailing_stop and close >= atr_trailing_stop :
                 df.at[i, 'Crossover'] = 1
-            elif prev_close >= prev_atr_trailing_stop and open <= atr_trailing_stop :
+            elif prev_close >= prev_atr_trailing_stop and close <= atr_trailing_stop :
                 df.at[i, 'Crossover'] = -1
-            elif prev_open >= prev_atr_trailing_stop and open <= atr_trailing_stop :
+            elif prev_close >= prev_atr_trailing_stop and close <= atr_trailing_stop :
                 df.at[i, 'Crossover'] = -1
         
         return df
