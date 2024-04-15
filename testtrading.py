@@ -1,3 +1,4 @@
+import ohlc
 import trading
 
 # trading.py를 1회 바로 실행하는 파일
