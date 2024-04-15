@@ -9,8 +9,6 @@ load_dotenv()
 # trading.py를 한 번 바로 실행하는 파일
 # 거래 시그널이 나온 경우, 실제 거래가 이루어짐
 
-leverage = 1
-
 api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
 

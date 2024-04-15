@@ -16,13 +16,13 @@ client = Client(api_key=api_key, api_secret=api_secret)
 global symbol
 symbol = 'DOGEUSDT'
 # BTC 가격 변동량이 크지 않아서 노잼
-# ENAUSDT 같이 신상 코인들이 변동폭이 더 커서 잼슴
+# 알트코인이 잼슴
 
 # 간격
 global interval
 interval = '15m'
 # 5분 15분 30분 다 해봤는데
-# 15분이 내가 쓰기 좋은듯
+# 15분이 좋은듯
 
 # n_loss = ATR * loss_value
 # 종가에 n_loss 더하거나 빼거나 해서 트레일링 스탑 구함
@@ -30,8 +30,8 @@ loss_value = 1.35
 # loss_value가 낮을수록 트레일링 스탑 민감해짐
 # 너무 민감하면 이거저거 다 배팅해서 오히려 안 좋을지도
 # 너무 둔감하면 거래를 안 함
-# 1, 1.5, 2, 2.5, 3.0, 3.5, 4까지 해봄
-# 그래프 주석 풀고 확인 가능
+# 1 ~ 4 다양하게 해봄
+
 
 global current_df
 

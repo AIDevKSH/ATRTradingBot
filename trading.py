@@ -9,6 +9,7 @@ load_dotenv()
 import schedule
 
 # Set Leverage
+global leverage
 leverage = 5
 
 # ==================================================================== #
