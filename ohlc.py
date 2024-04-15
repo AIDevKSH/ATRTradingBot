@@ -202,6 +202,5 @@ def position_decision():
 
     return df
 
-
 ohlc_df = position_decision()
 current_df = ohlc_df.tail(2)
