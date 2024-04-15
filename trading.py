@@ -127,7 +127,7 @@ def make_decision(df):
         open = df.iloc[-2]['Open']
         ema = df.iloc[-2]['EMA_14']
         crossover = df.iloc[-2]['Crossover']
-        print("123123")
+
         if crossover == 0 :
             print("Hold Position")
             return

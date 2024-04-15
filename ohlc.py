@@ -204,4 +204,4 @@ def position_decision():
 
 
 ohlc_df = position_decision()
-current_df = ohlc_df.tail(1)
+current_df = ohlc_df.tail(2)
