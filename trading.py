@@ -127,7 +127,7 @@ def make_decision(df):
     try :
         # open = df.iloc[-2]['Open']
         # ema = df.iloc[-2]['EMA_14']
-        crossover = df.iloc[-1]['Crossover']
+        crossover = df.iloc[-2]['Crossover']
 
         prev_position, prev_amount = my_position()
 
@@ -148,22 +148,32 @@ def make_decision(df):
         # Close Long
         if prev_position == 1 and crossover == -1 :
             sell(prev_amount)
+            prev_position = 0
             print("Close Long Position")
 
         # Close Short
         elif prev_position == -1 and crossover == 1 :
             buy(prev_amount)
+            prev_position = 0
             print("Close Short Position")
 
         # Enter Long
         # if crossover == 1 and open >= ema :
         if crossover == 1 :
+            if prev_position == -1 :
+                buy(prev_amount)
+            elif prev_position == 1 :
+                return
             buy(amount)
             print("Enter Long Position. Amount :", amount)
             
         # Enter Short
         # elif crossover == -1 and open <= ema :
         elif crossover == -1 :
+            if prev_position == 1 :
+                sell(prev_position)
+            elif prev_position == -1 :
+                return
             sell(amount)
             print("Enter Short Position. Amount :", amount)
 
