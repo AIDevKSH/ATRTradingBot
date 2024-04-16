@@ -125,10 +125,9 @@ def sell(amount):
 
 def make_decision(df):
     try :
-        open = df.iloc[-2]['Open']
-        ema = df.iloc[-2]['EMA_14']
-        crossover = df.iloc[-2]['Crossover']
-        crossover2 = df.iloc[-1]['Crossover']
+        # open = df.iloc[-2]['Open']
+        # ema = df.iloc[-2]['EMA_14']
+        crossover = df.iloc[-1]['Crossover']
 
         prev_position, prev_amount = my_position()
 
@@ -147,12 +146,12 @@ def make_decision(df):
         # -1 : Prev Position is Short
 
         # Close Long
-        if prev_position == 1 and crossover2 == -1 :
+        if prev_position == 1 and crossover == -1 :
             sell(prev_amount)
             print("Close Long Position")
 
         # Close Short
-        elif prev_position == -1 and crossover2 == 1 :
+        elif prev_position == -1 and crossover == 1 :
             buy(prev_amount)
             print("Close Short Position")
 
