@@ -130,48 +130,41 @@ def make_decision(df):
         crossover = df.iloc[-2]['Crossover']
         crossover2 = df.iloc[-1]['Crossover']
 
-        if crossover == 0 :
-            print("Hold Position")
-            return
+        prev_position, prev_amount = my_position()
 
-        else : 
-            prev_position, prev_amount = my_position()
+        usdt = get_balance()
+        amount = calculate_amount(usdt, ohlc.current_df)
 
-            usdt = get_balance()
-            amount = calculate_amount(usdt, ohlc.current_df)
+        print("Prev Position :", prev_position)
+        print("Prev Amount :", prev_amount)
+        print("My Free USDT : ", usdt)
+        print("Amount To Trade :", amount)
+        print("\n")
 
-            print("Prev Position :", prev_position)
-            print("Prev Amount :", prev_amount)
-            print("My Free USDT : ", usdt)
-            print("Amount To Trade :", amount)
-            print("\n")
+        #  prev_position Value
+        #  0 : Initial Value, Have No Position
+        #  1 : Prev Positon is Long
+        # -1 : Prev Position is Short
 
-            #  prev_position Value
-            #  0 : Initial Value, Have No Position
-            #  1 : Prev Positon is Long
-            # -1 : Prev Position is Short
+        # Close Long
+        if prev_position == 1 and crossover2 == -1 :
+            sell(prev_amount)
+            print("Close Long Position")
 
-            # Close Long
-            if prev_position == 1 and crossover2 == -1 :
-                sell(prev_amount)
-                print("Close Long Position")
+        # Close Short
+        elif prev_position == -1 and crossover2 == 1 :
+            buy(prev_amount)
+            print("Close Short Position")
 
-            # Close Short
-            elif prev_position == -1 and crossover2 == 1 :
-                buy(prev_amount)
-                print("Close Short Position")
-
-            # Enter Long
-            if crossover == 1 and open >= ema :
-                buy(amount)
-                print("Enter Long Position. Amount :", amount)
-                return
+        # Enter Long
+        if crossover == 1 and open >= ema :
+            buy(amount)
+            print("Enter Long Position. Amount :", amount)
             
-            # Enter Short
-            elif crossover == -1 and open <= ema :
-                sell(amount)
-                print("Enter Short Position. Amount :", amount)
-                return
+        # Enter Short
+        elif crossover == -1 and open <= ema :
+            sell(amount)
+            print("Enter Short Position. Amount :", amount)
 
     except Exception as e:
         print("make_decision() Exception:", e)
