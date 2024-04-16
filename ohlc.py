@@ -171,9 +171,13 @@ def if_crossover(df):
             close = df.iloc[i]['Close']
             atr_trailing_stop = df.iloc[i]['ATR_Trailing_Stop']
 
-            if prev_close <= prev_atr_trailing_stop and open >= atr_trailing_stop and close >= atr_trailing_stop :
+            # if prev_close <= prev_atr_trailing_stop and open >= atr_trailing_stop and close >= atr_trailing_stop :
+            #     df.at[i, 'Crossover'] = 1
+            # elif prev_close >= prev_atr_trailing_stop and open <= atr_trailing_stop and close <= atr_trailing_stop :
+            #     df.at[i, 'Crossover'] = -1
+            if prev_close <= prev_atr_trailing_stop and close >= atr_trailing_stop :
                 df.at[i, 'Crossover'] = 1
-            elif prev_close >= prev_atr_trailing_stop and open <= atr_trailing_stop and close <= atr_trailing_stop :
+            elif prev_close >= prev_atr_trailing_stop and close <= atr_trailing_stop :
                 df.at[i, 'Crossover'] = -1
         
         return df
