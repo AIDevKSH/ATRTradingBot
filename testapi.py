@@ -10,7 +10,7 @@ import ohlc
 # 공매도 포지션 진입, 종료 시 시세 차이로 인해 돈 더 나갈 수도 있음
 
 # 적당량 설정 후 실행
-leverage = 5
+leverage = 1
 symbol = "DOGEUSDT"
 amount = 100
 
@@ -96,11 +96,23 @@ if __name__ == "__main__" :
 
     sell(amount)
     prev_position, prev_amount = my_position()
+    print("숏 :", prev_position)
+    print("amount :", prev_amount)
+    time.sleep(5)
+
+    buy(amount)
+    prev_position, prev_amount = my_position()
     print("position :", prev_position)
     print("amount :", prev_amount)
     time.sleep(5)
 
     buy(amount)
+    prev_position, prev_amount = my_position()
+    print("롱 :", prev_position)
+    print("amount :", prev_amount)
+    time.sleep(5)
+
+    sell(amount)
     prev_position, prev_amount = my_position()
     print("position :", prev_position)
     print("amount :", prev_amount)
