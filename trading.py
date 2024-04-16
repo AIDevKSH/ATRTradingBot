@@ -151,15 +151,15 @@ def make_decision(df):
             #  1 : Prev Positon is Long
             # -1 : Prev Position is Short
 
-            # Close Short
+            # Close Long
             if prev_position == 1 and crossover2 == -1 :
                 sell(prev_amount)
-                print("Close Short Position")
+                print("Close Long Position")
 
-            # Close Long
+            # Close Short
             elif prev_position == -1 and crossover2 == 1 :
                 buy(prev_amount)
-                print("Close Long Position")
+                print("Close Short Position")
 
             # Enter Long
             if crossover == 1 and open >= ema :
