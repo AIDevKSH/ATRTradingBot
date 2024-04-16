@@ -143,6 +143,7 @@ def make_decision(df):
             print("Prev Amount :", prev_amount)
             print("My Free USDT : ", usdt)
             print("Amount To Trade :", amount)
+            print("\n")
 
             #  prev_position Value
             #  0 : Initial Value, Have No Position
@@ -242,6 +243,8 @@ def job() :
     print("\n", print_df[['Timestamp', 'Open' ,'Close', 'EMA_14', 'Crossover', 'Decision']], "\n")
 
     make_decision(ohlc.current_df)
+
+    print("\n")
 
 def every_15_minutes():
     schedule.every(15).minutes.do(job)
