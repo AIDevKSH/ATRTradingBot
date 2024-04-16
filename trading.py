@@ -156,17 +156,22 @@ def make_decision(df):
                     sell(prev_amount)
                     print("Close Short Position")
                 elif prev_position == 1 :
+                    print("Hold Position")
                     return
                 # Enter Long
                 buy(amount)
                 print("Enter Long Position. Amount :", amount)
+                return
 
             elif crossover == 1 and open < ema :
                 # Close Short
                 if prev_position == -1 :
                     sell(prev_amount)
                     print("Close Short Position")
-
+                    return
+                print("Hold Position")
+                return
+            
             # Enter Short
             elif crossover == -1 and open <= ema :
                 # Close Long
@@ -174,16 +179,21 @@ def make_decision(df):
                     buy(prev_amount)
                     print("Close Long Position")
                 elif prev_position == -1 :
+                    print("Hold Position")
                     return
                 # Enter Short
                 sell(amount)
                 print("Enter Short Position. Amount :", amount)
+                return
 
             elif crossover == -1 and open > ema :
                 # Close Long
                 if prev_position == 1 :
                     buy(prev_amount)
                     print("Close Long Position")
+                    return
+                print("Hold Position")
+                return
 
     except Exception as e:
         print("make_decision() Exception:", e)
