@@ -223,7 +223,9 @@ def job() :
     # This function returns ohlc.ohlc_df, ohlc.current_df
 
     ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == 1) & (ohlc.ohlc_df['Open'] >= ohlc.ohlc_df['EMA_14']), 'Decision'] = 1
+    ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == 1) & (ohlc.ohlc_df['Open'] < ohlc.ohlc_df['EMA_14']), 'Decision'] = 0
     ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == -1) & (ohlc.ohlc_df['Open'] <= ohlc.ohlc_df['EMA_14']), 'Decision'] = -1
+    ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == -1) & (ohlc.ohlc_df['Open'] > ohlc.ohlc_df['EMA_14']), 'Decision'] = 0
     ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == 0), 'Decision'] = 0
 
     print_df = ohlc.ohlc_df.tail(3)
