@@ -157,12 +157,14 @@ def make_decision(df):
             print("Close Short Position")
 
         # Enter Long
-        if crossover == 1 and open >= ema :
+        # if crossover == 1 and open >= ema :
+        if crossover == 1 :
             buy(amount)
             print("Enter Long Position. Amount :", amount)
             
         # Enter Short
-        elif crossover == -1 and open <= ema :
+        # elif crossover == -1 and open <= ema :
+        elif crossover == -1 :
             sell(amount)
             print("Enter Short Position. Amount :", amount)
 
