@@ -22,14 +22,14 @@ https://aidevksh.notion.site/ATR-with-EMA-Trading-Bot-d548ef66a42d48908576542077
 4. pip install pandas python-binance python-dotenv ccxt mplfinance <br/><br/>
 5. .env 파일 생성, BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/><br/>
 6. 바이낸스 api <br/><br/>
-7. visualize.py : 데이터 시각화 <br/></br>
+7. visualize.py : 데이터 시각화. 차트 보려면 GUI 환경 필요. 여기까지는 무과금.<br/></br>
 8. 바이낸스 선물 계좌, 선물 거래 활성 api, <br/><br/>
 9. 돈 : 최소 거래 5 usdt 이상 필요. 항상 시드의 30%만 가지고 거래하므로 15 usdt 이상 보유해야됨.<br/><br/>
 10. testapi.py : 테스트 거래 <br/><br/>
 11. sudo chmod 744 trading.py <br/><br/>
-12. cron-e 편집기 열고 */15 * * * * /home/ec2-user/ATRTradingBot/trading.py 저장하면 15분마다 자동 실행 <br/><br/>
-13. 파이썬 설치 경로 : which python3 <br/><br/>
-14. /usr/bin/env python3 이거 아니면 trading.py 첫째 줄 수정 <br/><br/>
+12. 파이썬 설치 경로 보기 : which python3 <br/><br/>
+13. 경로 /usr/bin/env python3 이거 아니면 trading.py 첫째 줄 수정 <br/><br/>
+14. cron-e 편집기 열고 */15 * * * * /home/ec2-user/ATRTradingBot/trading.py 저장하면 15분마다 자동 실행 <br/><br/>
 15. 종료하려면 cron-e 편집기 열고 쓴거 지우기 <br/><br/>
 <br/><br/>
 원래 schedule 사용했는데 자꾸 터져서 cron으로 바꿈 <br/><br/>
