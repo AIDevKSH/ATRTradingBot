@@ -6,47 +6,8 @@ warnings.filterwarnings('ignore')
 from dotenv import load_dotenv
 import os
 load_dotenv()
-import schedule
 
-# Set Leverage
-global leverage
 leverage = 5
-
-# ==================================================================== #
-
-#  Crossover
-#  0 : Initial value, No Crossover 
-
-#  1 : Upward Crossover
-# Bull Signal
-# prev_close <= prev_atr_trailing_stop and open >= atr_trailing_stop
-# prev_open  <= prev_atr_trailing_stop and open >= atr_trailing_stop
-
-# -1 : Downward Crossover
-# Bear Signal
-# prev_close >= prev_atr_trailing_stop and open <= atr_trailing_stop
-# prev_open  >= prev_atr_trailing_stop and open <= atr_trailing_stop
-
-# ==================================================================== #
-
-# Decision 
-
-# Enter Long,  Close Short (If I Have)
-# crossover == 1  and open >= ema
-
-# Enter Short, Close Long  (If I Have)
-# crossover == -1 and open <= ema
-
-# Close Short
-# crossover == 1  and open < ema
-
-# Close Long
-# crossover == -1 and open > ema
-
-# Else
-# Hold Position
-
-# ==================================================================== #
 
 api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
@@ -123,63 +84,6 @@ def sell(amount):
     except Exception as e:
         print("sell() Exception", e)
 
-def make_decision(df):
-    try :
-        # open = df.iloc[-2]['Open']
-        # ema = df.iloc[-2]['EMA_14']
-        crossover = df.iloc[-2]['Crossover']
-
-        prev_position, prev_amount = my_position()
-
-        usdt = get_balance()
-        amount = calculate_amount(usdt, ohlc.current_df)
-
-        print("Prev Position :", prev_position)
-        print("Prev Amount :", prev_amount)
-        print("My Free USDT : ", usdt)
-        print("Amount To Trade :", amount)
-        print("\n")
-
-        #  prev_position Value
-        #  0 : Initial Value, Have No Position
-        #  1 : Prev Positon is Long
-        # -1 : Prev Position is Short
-
-        # Close Long
-        if prev_position == 1 and crossover == -1 :
-            sell(prev_amount)
-            prev_position = 0
-            print("Close Long Position")
-
-        # Close Short
-        elif prev_position == -1 and crossover == 1 :
-            buy(prev_amount)
-            prev_position = 0
-            print("Close Short Position")
-
-        # Enter Long
-        # if crossover == 1 and open >= ema :
-        if crossover == 1 :
-            if prev_position == -1 :
-                buy(prev_amount)
-            elif prev_position == 1 :
-                return
-            buy(amount)
-            print("Enter Long Position. Amount :", amount)
-            
-        # Enter Short
-        # elif crossover == -1 and open <= ema :
-        elif crossover == -1 :
-            if prev_position == 1 :
-                sell(prev_position)
-            elif prev_position == -1 :
-                return
-            sell(amount)
-            print("Enter Short Position. Amount :", amount)
-
-    except Exception as e:
-        print("make_decision() Exception:", e)
-
 def my_position():
     try :
         #  prev_position Value
@@ -208,37 +112,56 @@ def my_position():
     except Exception as e:
         print("my_position() Exception", e)
 
-def job() :
-    time.sleep(3)
+def make_decision(df) :
+    try :
+        crossover = df.iloc[-1]['Crossover']
+        rsi = df.iloc[-1]['RSI']
+        prev_position, prev_amount = my_position()
+        usdt = get_balance()
+        amount = calculate_amount(usdt, df.tail(1))
 
-    ohlc.position_decision()
-    # This function returns ohlc.ohlc_df, ohlc.current_df
+        if crossover == 0 :
+            print("Hold Position. Crossover :", crossover)
+            return
+        
+        else :
 
-    ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == 1) & (ohlc.ohlc_df['Open'] >= ohlc.ohlc_df['EMA_14']), 'Decision'] = 1
-    ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == 1) & (ohlc.ohlc_df['Open'] < ohlc.ohlc_df['EMA_14']), 'Decision'] = 0
-    ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == -1) & (ohlc.ohlc_df['Open'] <= ohlc.ohlc_df['EMA_14']), 'Decision'] = -1
-    ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == -1) & (ohlc.ohlc_df['Open'] > ohlc.ohlc_df['EMA_14']), 'Decision'] = 0
-    ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == 0), 'Decision'] = 0
+            if crossover == 1 and rsi <= 45 or rsi >= 55 :
+                if prev_position == -1 :
+                    buy(prev_amount)
+                    print("Close Short Position. Prev Amount :", prev_amount)
+                elif prev_position == 1 :
+                    return
+                buy(amount)
+                print("Enter Long Position. Crossover :", crossover, " RSI :", rsi, " Amount :", amount)
+                return
 
-    print_df = ohlc.ohlc_df.tail(3)
-    print("\n", print_df[['Timestamp', 'Open' ,'Close', 'EMA_14', 'Crossover', 'Decision']], "\n")
+            elif crossover == -1 and rsi <= 45 or rsi >= 55 :
+                if prev_position == 1 :
+                    sell(prev_amount)
+                    print("Close Long Position. Prev Amount :", prev_amount)
+                elif prev_position == -1 :
+                    return
+                sell(amount)
+                print("Enter Short Position. Crossover :", crossover, " RSI :", rsi, " Amount :", amount)
+                return
 
-    make_decision(ohlc.current_df)
+            elif crossover == 1 and prev_position == -1 and rsi > 45 and rsi < 55 :
+                buy(prev_amount)
+                print("Close Short Position. Prev Amount :", prev_amount)
+                return
 
-    print("\n")
+            elif crossover == -1 and prev_position == 1 and rsi > 45 and rsi < 55 :
+                sell(prev_amount)
+                print("Close Long Position. Prev Amount :", prev_amount)
+                return
 
-def every_15_minutes():
-    schedule.every(15).minutes.do(job)
-
-    schedule.every().hour.at(":00").do(job)
-    schedule.every().hour.at(":15").do(job)
-    schedule.every().hour.at(":30").do(job)
-    schedule.every().hour.at(":45").do(job)
-
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    except Exception as e :
+        print("make_decision() Exception", e)
 
 if __name__ == "__main__" :
     post_leverage()
-    every_15_minutes()
+    ohlc_df = ohlc.get_ohlc()
+    print(ohlc_df.tail(1))
+    make_decision(ohlc_df)
+    

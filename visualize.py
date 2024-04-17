@@ -1,21 +1,24 @@
 import ohlc
+import mplfinance as mpf
 
-ohlc.position_decision()
+def make_plot(df):
+    line = 50
 
-ohlc.ohlc_df['Decision'] = 0
+    df.set_index('Timestamp', inplace=True)
+    
+    ap1 = mpf.make_addplot(df['ATR_Trailing_Stop'], color='blue')
+    ap2 = mpf.make_addplot(df['RSI'], panel=2, color='green')
+    ap3 = mpf.make_addplot([line + 5] * len(df), panel=2, color='orange', secondary_y=False)
+    ap4 = mpf.make_addplot([line - 5] * len(df), panel=2, color='orange', secondary_y=False)
 
-# 거래 안 되는 api도 가능
+    mpf.plot(df, type='candle', style='charles', title='ATR RSI',
+             ylabel='Price', addplot=[ap1, ap2, ap3, ap4],  
+             figratio=(16, 9), figsize=(14, 7), xrotation=0,
+             panel_ratios=(6, 3), volume = True)
 
-# Decision 값 설정 | 1 : Enter Long | -1 : Enter Short
-ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == 1) & (ohlc.ohlc_df['Open'] >= ohlc.ohlc_df['EMA_14']), 'Decision'] = 1
-ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == 1) & (ohlc.ohlc_df['Open'] < ohlc.ohlc_df['EMA_14']), 'Decision'] = 0
-ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == -1) & (ohlc.ohlc_df['Open'] <= ohlc.ohlc_df['EMA_14']), 'Decision'] = -1
-ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == -1) & (ohlc.ohlc_df['Open'] > ohlc.ohlc_df['EMA_14']), 'Decision'] = 0
-ohlc.ohlc_df.loc[(ohlc.ohlc_df['Crossover'] == 0), 'Decision'] = 0
-
-# 이틀 데이터 중 크로스오버 한 데이터만 보기
-crossover_df =  ohlc.ohlc_df[ohlc.ohlc_df['Crossover'] != 0]
-print(crossover_df[['Timestamp', 'Open' ,'Close', 'EMA_14', 'ATR_Trailing_Stop', 'Crossover', 'Decision']])
-# 포지션 진입 : Crossover == Decision 일 때
-
-ohlc.make_plot(ohlc.ohlc_df)
+if __name__ == "__main__" :
+    ohlc_df = ohlc.get_ohlc()
+    crossover_df =  ohlc_df[ohlc_df['Crossover'] != 0]
+    print(crossover_df)
+    print(ohlc_df.tail(1))
+    make_plot(ohlc_df)

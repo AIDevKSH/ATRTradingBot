@@ -9,7 +9,6 @@ import ohlc
 # 거래 시 수수료 나감
 # 공매도 포지션 진입, 종료 시 시세 차이로 인해 돈 더 나갈 수도 있음
 
-# 적당량 설정 후 실행
 leverage = 1
 symbol = "DOGEUSDT"
 amount = 100

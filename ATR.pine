@@ -1,0 +1,31 @@
+//@version=4
+study(title="ATR", overlay = true)
+
+a = 2
+
+xATR  = atr(1)
+nLoss = a * xATR
+
+src = close
+
+xATRTrailingStop = 0.0
+xATRTrailingStop := 
+
+    iff(src > nz(xATRTrailingStop[1], 0) and src[1] > nz(xATRTrailingStop[1], 0),
+        max(nz(xATRTrailingStop[1]), src - nLoss),
+
+    iff(src < nz(xATRTrailingStop[1], 0) and src[1] < nz(xATRTrailingStop[1], 0),
+        min(nz(xATRTrailingStop[1]), src + nLoss), 
+
+    iff(src > nz(xATRTrailingStop[1], 0), 
+        src - nLoss, src + nLoss)))
+
+above = crossover(src, xATRTrailingStop)
+below = crossover(xATRTrailingStop, src)
+
+buy  = open > xATRTrailingStop and above 
+sell = open < xATRTrailingStop and below
+
+plotshape(buy,  title = "Buy",  text = 'Buy',  style = shape.labelup,   location = location.belowbar, color= color.green, textcolor = color.white, transp = 0, size = size.tiny)
+plotshape(sell, title = "Sell", text = 'Sell', style = shape.labeldown, location = location.abovebar, color= color.red,   textcolor = color.white, transp = 0, size = size.tiny)
+plot(xATRTrailingStop, color=color.white, title="Trailing Stop")
