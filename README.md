@@ -1,6 +1,6 @@
 <h1>🤑🤖🔥 ATR + RSI Trading Bot 🔥🤖🤑</h1>
 
-<br/><br/><br/>
+<br/><br/>
 
 <h3>⚠️ 주식/코인 거래 일절 해본 적도 없는 사람(나)이 대충 유튜브 몇 개 2배속으로 보고 만든 프로그램임</h3>
 <h4>수익(마이너스)내고 싶다면 실행해보는게 좋을지도? </h4>
@@ -15,29 +15,42 @@ https://aidevksh.notion.site/ATR-with-EMA-Trading-Bot-d548ef66a42d48908576542077
 <br/><br/><br/>
 
 <h2>🧑‍💻 사용법</h2>
-1. git clone https://github.com/AIDevKSH/ATRTradingBot.git 🙂 cd ATRwithRSI <br/><br/>
-2. 바이낸스 선물계좌, 선물 거래 가능한 api <br/><br/>
-3. 돈 : 최소 거래 5 usdt 이상 필요. 항상 시드의 30%만 가지고 거래하므로 15 usdt 이상 보유해야됨.<br/><br/>
-4. 컴퓨터 (난 EC2 공짜 사용 중) <br/><br/>
-5. pip install pandas python-binance python-dotenv ccxt schedule mplfinance <br/><br/>
-6. .env 파일 생성, BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/><br/>
-7. visualize.py : 데이터 시각화. 선물 거래 안 되는 바이낸스 api도 가능 <br/><br/>
-8. testapi.py : 선물 거래 작동하는지 확인용 <br/><br/>
-9. sudo chmod 744 trading.py <br/><br/>
-10. cron-e 편집기 열고 */15 * * * * /home/ec2-user/ATRTradingBot/trading.py 저장하면 15분마다 자동 실행됨 <br/><br/>
-11. 원래 schedule 라이브러리 사용했는데 자꾸 터져서 바꿈 <br/><br/>
-12. 종료하려면 cron-e 편집기 열고 쓴거 지우기 <br/><br/>
+<br/>
+1. 컴퓨터 (난 EC2 공짜 사용 중) <br/><br/>
+2. git clone https://github.com/AIDevKSH/ATRTradingBot.git<br/><br/>
+3. cd ATRwithRSI <br/><br/>
+4. pip install pandas python-binance python-dotenv ccxt mplfinance <br/><br/>
+5. .env 파일 생성, BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/><br/>
+
+</br>
+6. 바이낸스 api <br/><br/>
+7. visualize.py : 데이터 시각화 <br/>
+여기까진 무과금 <br/><br/>
+
+</br>
+여기부턴 과금 <br/><br/>
+8. 바이낸스 선물 계좌, 지정 ip + 선물 거래 활성 api, <br/><br/>
+9. 돈 : 최소 거래 5 usdt 이상 필요. 항상 시드의 30%만 가지고 거래하므로 15 usdt 이상 보유해야됨.<br/><br/>
+10. testapi.py : 테스트 거래 <br/><br/>
+11. sudo chmod 744 trading.py <br/><br/>
+12. cron-e 편집기 열고 */15 * * * * /home/ec2-user/ATRTradingBot/trading.py 저장하면 15분마다 자동 실행 <br/><br/>
+13. 파이썬 설치 경로 : which python3 <br/><br/>
+14. /usr/bin/env python3 이거 아니면 trading.py 첫째 줄 수정 <br/><br/>
+15. 종료하려면 cron-e 편집기 열고 쓴거 지우기 <br/><br/>
+<br/><br/>
+원래 schedule 라이브러리 사용했는데 자꾸 터져서 바꿈 <br/><br/>
 
 <br/><br/><br/>
 
-<h3>ChatGPT 🤖</h3>
+<h3>GPT 🤖</h3>
 
 <br/>
 ATR은 Average True Range(평균 참 범위)의 약자로, 시장의 변동성을 측정하는 지표입니다. 주식, 외환, 선물 등 다양한 금융상품에서 사용됩니다. ATR은 특정 기간 동안의 최고가와 최저가 사이의 차이를 측정하여 평균을 계산합니다. 이것은 가격의 움직임이 얼마나 큰지를 나타냅니다. 변동성이 높을수록 ATR 값이 높아지며, 변동성이 낮을수록 ATR 값이 낮아집니다.<br/>
 <br/>
 ATR을 사용하여 트레일링 스탑을 설정할 수 있습니다. ATR 트레일링 스탑은 가격의 움직임에 따라 스톱 로스를 동적으로 조정하는 방법 중 하나입니다. ATR을 이용하면 시장의 변동성에 따라 스톱 로스를 조절하여 손실을 최소화할 수 있습니다.<br/>
 <br/>
-일반적으로 ATR 트레일링 스탑은 현재 가격에서 ATR의 여러 배수를 빼거나 더함으로써 계산됩니다. 예를 들어, 현재 가격에서 2배의 ATR을 빼면 롱 포지션(매수 포지션)의 트레일링 스탑이 됩니다. 즉, 가격이 현재 가격에서 2배의 ATR만큼 하락할 때까지 포지션을 유지합니다. 마찬가지로, 현재 가격에 2배의 ATR을 더하면 숏 포지션(매도 포지션)의 트레일링 스톱이 됩니다. 이러한 방식으로 ATR을 이용하면 시장의 변동성에 따라 스톱 로스를 동적으로 조절할 수 있습니다.<br/>
+일반적으로 ATR 트레일링 스탑은 현재 가격에서 ATR의 여러 배수를 빼거나 더함으로써 계산됩니다. 예를 들어, 현재 가격에서 2배의 ATR을 빼면 롱 포지션(매수 포지션)의 트레일링 스탑이 됩니다. <br/>
+즉, 가격이 현재 가격에서 2배의 ATR만큼 하락할 때까지 포지션을 유지합니다. 마찬가지로, 현재 가격에 2배의 ATR을 더하면 숏 포지션(매도 포지션)의 트레일링 스톱이 됩니다. 이러한 방식으로 ATR을 이용하면 시장의 변동성에 따라 스톱 로스를 동적으로 조절할 수 있습니다.<br/>
 
 <br/>
 
@@ -45,7 +58,7 @@ RSI는 상대강도지수(Relative Strength Index)의 줄임말로, 주식 시�
 <br/>
 RSI는 일정 기간 동안의 상승분과 하락분의 평균값을 계산하여 상대적으로 강도를 나타냅니다. 이를 통해 가격의 상승 및 하락이 얼마나 강하게 일어났는지를 파악할 수 있습니다. <br/>
 <br/>
-RSI의 값은 일반적으로 0에서 100 사이의 범위에 있으며, 70 이상이면 초과매수 상태로 간주되고, 30 이하면 초과매도 상태로 간주됩니다. 이는 매수 또는 매도 신호를 확인하는 데 사용될 수 있습니다. <br/>
+RSI의 값은 일반적으로 0에서 100 사이의 범위에 있으며, 70 이상이면 과매수 상태로 간주되고, 30 이하면 과매도 상태로 간주됩니다. 이는 매수 또는 매도 신호를 확인하는 데 사용될 수 있습니다. <br/>
 
 <br/><br/><br/>
 
