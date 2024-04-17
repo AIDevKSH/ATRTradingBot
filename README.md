@@ -49,8 +49,8 @@ RSI의 값은 일반적으로 0에서 100 사이의 범위에 있으며, 70 이�
 11. sudo chmod 744 trading.py <br/><br/>
 12. 파이썬 설치 경로 보기 : which python3 <br/><br/>
 13. 경로 /usr/bin/env python3 이거 아니면 trading.py 첫째 줄 수정 <br/><br/>
-14. cron-e 편집기 열고 */15 * * * * /home/ec2-user/ATRTradingBot/trading.py 저장하면 15분마다 자동 실행 <br/><br/>
-15. 종료하려면 cron-e 편집기 열고 쓴거 지우기 <br/><br/>
+14. crontab -e 편집기 열고 */15 * * * * /home/ec2-user/ATRTradingBot/trading.py 저장하면 15분마다 자동 실행 <br/><br/>
+15. 종료하려면 crontab -e 편집기 열고 쓴거 지우기 <br/><br/>
 <br/><br/>
 원래 schedule 사용했는데 자꾸 터져서 cron으로 바꿈 <br/><br/>
 
