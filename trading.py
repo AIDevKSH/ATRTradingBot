@@ -8,6 +8,7 @@ load_dotenv()
 import pandas as pd
 from binance.client import Client
 from datetime import datetime, timedelta
+import schedule
 
 api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
@@ -324,9 +325,20 @@ def make_decision(df) :
     except Exception as e :
         print("make_decision() Exception", e)
 
-if __name__ == "__main__" :
-    post_leverage()
+def job():
+    time.sleep(3)
     ohlc_df = get_ohlc()
     print(ohlc_df.tail(1))
     make_decision(ohlc_df)
-    
+    ohlc_df = None
+
+if __name__ == "__main__" :
+    post_leverage()
+    schedule.every().hour.at(":00").do(job)
+    schedule.every().hour.at(":15").do(job)
+    schedule.every().hour.at(":30").do(job)
+    schedule.every().hour.at(":45").do(job)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(5)
