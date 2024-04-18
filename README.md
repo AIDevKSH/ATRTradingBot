@@ -54,7 +54,8 @@ RSI의 값은 일반적으로 0에서 100 사이의 범위에 있으며, 70 이�
 16. crontab -e 편집기 열고 */15 * * * * /root/ATRTradingBot/trading.py 저장하면 15분마다 자동 실행 <br/><br/>
 17. 종료하려면 crontab -e 편집기 열고 쓴거 지우기 <br/><br/>
 <br/><br/>
-원래 schedule 사용했는데 자꾸 터져서 cron으로 바꿈 <br/><br/>
+
+EC2에서 하려니까 매우 복잡하네
 
 <br/><br/><br/>
 
