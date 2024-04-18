@@ -37,20 +37,22 @@ RSI의 값은 일반적으로 0에서 100 사이의 범위에 있으며, 70 이�
 <h2>🧑‍💻 사용법</h2>
 <br/>
 1. 컴퓨터 (난 EC2 공짜 사용 중) <br/><br/>
-2. git clone https://github.com/AIDevKSH/ATRTradingBot.git<br/><br/>
-3. cd ATRwithRSI <br/><br/>
-4. pip install pandas python-binance python-dotenv ccxt mplfinance <br/><br/>
-5. .env 파일 생성, BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/><br/>
-6. 바이낸스 api <br/><br/>
-7. visualize.py : 데이터 시각화. 차트 보려면 GUI 환경 필요. 여기까지는 무과금.<br/></br>
-8. 바이낸스 선물 계좌, 선물 거래 활성 api, <br/><br/>
-9. 돈 : 최소 거래 5 usdt 이상 필요. 항상 시드의 30%만 가지고 거래하므로 15 usdt 이상 보유해야됨.<br/><br/>
-10. testapi.py : 테스트 거래 <br/><br/>
-11. sudo chmod 744 trading.py <br/><br/>
-12. 파이썬 설치 경로 보기 : which python3 <br/><br/>
-13. 경로 /usr/bin/env python3 이거 아니면 trading.py 첫째 줄 수정 <br/><br/>
-14. crontab -e 편집기 열고 */15 * * * * /home/ec2-user/ATRTradingBot/trading.py 저장하면 15분마다 자동 실행 <br/><br/>
-15. 종료하려면 crontab -e 편집기 열고 쓴거 지우기 <br/><br/>
+2. pip install ccxt
+3. sudo passwd root
+4. su -
+5. git clone https://github.com/AIDevKSH/ATRTradingBot.git<br/><br/>
+6. cd ATRwithRSI <br/><br/>
+7. pip install pandas python-binance python-dotenv mplfinance  <br/><br/>
+8. .env 파일 생성, BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/><br/>
+9. 바이낸스 api <br/><br/>
+10. visualize.py : 데이터 시각화. 차트 보려면 GUI 환경 필요. 여기까지는 무과금.<br/></br>
+11. 바이낸스 선물 계좌, 선물 거래 활성 api, <br/><br/>
+12. 돈 : 최소 거래 5 usdt 이상 필요. 항상 시드의 30%만 가지고 거래하므로 15 usdt 이상 보유해야됨.<br/><br/>
+13. testapi.py : 테스트 거래 <br/><br/>
+14. sudo chmod 744 trading.py <br/><br/>
+15. sudo yum install cronie
+16. crontab -e 편집기 열고 */15 * * * * /root/ATRTradingBot/trading.py 저장하면 15분마다 자동 실행 <br/><br/>
+17. 종료하려면 crontab -e 편집기 열고 쓴거 지우기 <br/><br/>
 <br/><br/>
 원래 schedule 사용했는데 자꾸 터져서 cron으로 바꿈 <br/><br/>
 
