@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import sys
+sys.path.append('/home/ec2-user/.local/lib/python3.9/site-packages')
 import ccxt 
 import time
 import warnings
