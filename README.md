@@ -36,6 +36,7 @@ RSI의 값은 일반적으로 0에서 100 사이의 범위에 있으며, 70 이�
 
 <h2>🧑‍💻 데이터 시각화(무과금) 🧑‍💻</h2>
 <br/>
+
 1. git clone https://github.com/AIDevKSH/ATRTradingBot.git <br/><br/>
 3. pip install pandas python-binance python-dotenv mplfinance ccxt <br/><br/>
 4. 바이낸스 API 생성 <br/><br/>
