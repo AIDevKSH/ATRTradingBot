@@ -74,11 +74,11 @@ RSI의 값은 일반적으로 0에서 100 사이의 범위에 있으며, 70 이�
 12. sudo mkdir /home/ec2-user/logs <br/>
     sudo chown ec2-user:ec2-user /home/ec2-user/logs <br/><br/>
 
-13. crontab -e 편집기 열기 <br/>
+13. crontab -e 편집기 열기 <br/><br/>
     15분 마다 반복 실행 <br/>
-    */15 * * * * /usr/bin/python3 /home/ec2-user/ATRTradingBot/trading.py >> /home/ec2-user/logs/trading.log 2>&1 <br/>
-    한 달 로그를 압축 파일로 저장, 원본 삭제 <br/>
-    0 0 1 * * /bin/tar -czf /home/ec2-user/logs/archive-$(date +\%Y\%m\%d).tar.gz /home/ec2-user/logs/*.log && /bin/find /home/ec2-user/logs/ -type f -name "*.log" -exec /bin/rm {} \; <br/>
+    */15 * * * * /usr/bin/python3 /home/ec2-user/ATRTradingBot/trading.py >> /home/ec2-user/logs/trading.log 2>&1 <br/><br/>
+    한 달 로그를 같은 경로에 압축 파일로 저장, 원본 삭제 <br/>
+    0 0 1 * * /bin/tar -czf /home/ec2-user/logs/archive-$(date +\%Y\%m\%d).tar.gz /home/ec2-user/logs/*.log && /bin/find /home/ec2-user/logs/ -type f -name "*.log" -exec /bin/rm {} \; <br/><br/>
     작성 후 저장 <br/><br/>
 
 14. sudo service crond restart <br/><br/>
