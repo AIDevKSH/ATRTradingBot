@@ -9,7 +9,7 @@
 
 <br/><br/><br/>
 
-<h2>개발 과정 및 설명</h2>
+<h2>개발 과정</h2>
 https://aidevksh.notion.site/ATR-with-EMA-Trading-Bot-d548ef66a42d48908576542077b5b13b?pvs=4 <br/>
 
 <br/><br/><br/>
@@ -34,7 +34,7 @@ RSI의 값은 일반적으로 0에서 100 사이의 범위에 있으며, 70 이�
 
 <br/><br/><br/>
 
-<h2>🧑‍💻 데이터 시각화(무과금) 🧑‍💻</h2>
+<h2>🧑‍💻 데이터 시각화 (무과금) 🧑‍💻</h2>
 <br/>
 
 1. git clone https://github.com/AIDevKSH/ATRTradingBot.git <br/><br/>
@@ -43,7 +43,9 @@ RSI의 값은 일반적으로 0에서 100 사이의 범위에 있으며, 70 이�
 5. .env 생성 BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/><br/>
 6. visualize.py 실행 <br/><br/>
 
-<h2>🧑‍💻 EC2에서 사용법(과금) 🧑‍💻</h2>
+<br/><br/>
+
+<h2>🧑‍💻 EC2에서 사용법 (과금) 🧑‍💻</h2>
 <br/>
 
 1. 인스턴스 만들기 <br/><br/>
