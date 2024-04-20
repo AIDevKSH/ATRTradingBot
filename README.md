@@ -45,27 +45,46 @@ RSI의 값은 일반적으로 0에서 100 사이의 범위에 있으며, 70 이�
 <h2>🧑‍💻 EC2에서 사용법(과금) 🧑‍💻</h2>
 <br/>
 1. 인스턴스 만들기 <br/><br/>
+
 2. 바이낸스 선물 계좌, 선물 거래 가능 API 생성<br/><br/>
+
 3. 잔고 : 15 USDT 이상 필요 (거래 시 전체 시드의 30% 사용. 최소 거래 대금 5 USDT 이상 필요) <br/><br/>
+
 4. sudo yum install git python3-pip cronie -y <br/><br/>
+
 5. pip install pandas python-binance python-dotenv mplfinance ccxt <br/><br/>
+
 6. git clone https://github.com/AIDevKSH/ATRTradingBot.git <br/><br/>
+
 7. cd ATRTradingBot <br/><br/>
+
 8. .env 생성 <br/>
-BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/><br/>
+   BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/><br/>
+
 9. testapi.py : 거래 작동 여부 확인용 <br/><br/>
+
 10. sudo chmod 774 trading.py (744 해도 될듯)<br/></br>
+
 11. sudo /usr/bin/python3 /home/ec2-user/ATRTradingBot/trading.py 작동하는지 확인 <br/><br/>
+
 12. sudo mkdir /home/ec2-user/logs <br/>
-sudo chown ec2-user:ec2-user /home/ec2-user/logs
+    sudo chown ec2-user:ec2-user /home/ec2-user/logs <br/><br/>
+
 13. crontab -e 편집기 열기 <br/>
-*/15 * * * * /usr/bin/python3 /home/ec2-user/ATRTradingBot/trading.py >> /home/ec2-user/logs/trading.log 2>&1 <br/>
-작성 후 저장 <br/><br/>
+    */15 * * * * /usr/bin/python3 /home/ec2-user/ATRTradingBot/trading.py >> /home/ec2-user/logs/trading.log 2>&1 <br/>
+    작성 후 저장 <br/><br/>
+
 14. sudo service crond restart <br/><br/>
-15. crontab -l : 목록 확인 <br/><br/>
-16. crontab -r : 삭제 <br/><br/>
-17. 실시간 확인 : tail -f /home/ec2-user/logs/trading.log <br/>
-전체 확인 cat /home/ec2-user/logs/trading.log <br/><br/>
+
+15. crontab -l : 작성됐는지 확인 <br/><br/>
+
+16. 실시간 로그 : tail -f /home/ec2-user/logs/trading.log <br/>
+    전체 로그 : cat /home/ec2-user/logs/trading.log <br/>
+    전체 로그 2: less /home/ec2-user/logs/trading.log <br/><br/>
+
+17. crontab -r : 삭제 <br/><br/>
+
+
 
 <br/><br/><br/>
 
