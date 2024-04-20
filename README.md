@@ -36,11 +36,11 @@ RSI의 값은 일반적으로 0에서 100 사이의 범위에 있으며, 70 이�
 
 <h2>🧑‍💻 데이터 시각화(무과금) 🧑‍💻</h2>
 <br/>
-1. git clone https://github.com/AIDevKSH/ATRTradingBot.git
-3. pip install pandas python-binance python-dotenv mplfinance ccxt
-4. 바이낸스 API 생성
-5. .env 생성 BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력
-6. visualize.py 실행
+1. git clone https://github.com/AIDevKSH/ATRTradingBot.git <br/><br/>
+3. pip install pandas python-binance python-dotenv mplfinance ccxt <br/><br/>
+4. 바이낸스 API 생성 <br/><br/>
+5. .env 생성 BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/><br/>
+6. visualize.py 실행 <br/><br/>
 
 <h2>🧑‍💻 EC2에서 사용법(과금) 🧑‍💻</h2>
 <br/>
@@ -51,16 +51,21 @@ RSI의 값은 일반적으로 0에서 100 사이의 범위에 있으며, 70 이�
 5. pip install pandas python-binance python-dotenv mplfinance ccxt <br/><br/>
 6. git clone https://github.com/AIDevKSH/ATRTradingBot.git <br/><br/>
 7. cd ATRTradingBot <br/><br/>
-8. .env 생성 BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/><br/>
+8. .env 생성 <br/>
+BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/><br/>
 9. testapi.py : 거래 작동 여부 확인용 <br/><br/>
 10. sudo chmod 774 trading.py (744 해도 될듯)<br/></br>
 11. sudo /usr/bin/python3 /home/ec2-user/ATRTradingBot/trading.py 작동하는지 확인 <br/><br/>
-12. sudo mkdir /home/ec2-user/logs | sudo chown ec2-user:ec2-user /home/ec2-user/logs
-13. crontab -e 편집기 열고 */15 * * * * /usr/bin/python3 /home/ec2-user/ATRTradingBot/trading.py >> /home/ec2-user/logs/trading.log 2>&1 저장 <br/><br/>
+12. sudo mkdir /home/ec2-user/logs <br/>
+sudo chown ec2-user:ec2-user /home/ec2-user/logs
+13. crontab -e 편집기 열기 <br/>
+*/15 * * * * /usr/bin/python3 /home/ec2-user/ATRTradingBot/trading.py >> /home/ec2-user/logs/trading.log 2>&1 <br/>
+작성 후 저장 <br/><br/>
 14. sudo service crond restart <br/><br/>
 15. crontab -l : 목록 확인 <br/><br/>
 16. crontab -r : 삭제 <br/><br/>
-17. 실시간 확인 : tail -f /home/ec2-user/logs/trading.log | 전체 확인 cat /home/ec2-user/logs/trading.log <br/><br/>
+17. 실시간 확인 : tail -f /home/ec2-user/logs/trading.log <br/>
+전체 확인 cat /home/ec2-user/logs/trading.log <br/><br/>
 
 <br/><br/><br/>
 
