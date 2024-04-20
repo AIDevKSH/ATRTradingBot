@@ -331,6 +331,7 @@ if __name__ == "__main__" :
     post_leverage()
     time.sleep(3)
     ohlc_df = get_ohlc()
-    print(ohlc_df.tail(1))
+    current_df = ohlc_df.tail(1)
+    print(current_df[['Timestamp', 'Close', 'Crossover', 'RSI']])
     make_decision(ohlc_df)
     ohlc_df = None
