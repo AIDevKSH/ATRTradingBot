@@ -28,7 +28,7 @@ binance = ccxt.binance(config={
 def post_leverage():
     try:
         resp = binance.fapiprivate_post_leverage({
-            'symbol': symbol,
+            'symbol': ohlc.symbol,
             'leverage': leverage,
         })
         time.sleep(0.5)
@@ -69,7 +69,7 @@ def calculate_amount(usdt, df):
 def buy(amount):
     try :
         binance.create_market_buy_order(
-            symbol=symbol,
+            symbol=ohlc.symbol,
             amount=amount,
         )
         time.sleep(0.5)
@@ -80,7 +80,7 @@ def buy(amount):
 def sell(amount):
     try :
         binance.create_market_sell_order(
-            symbol=symbol,
+            symbol=ohlc.symbol,
             amount=amount,
         )
         time.sleep(0.5)
@@ -99,7 +99,7 @@ def my_position():
         positions = balance['info']['positions']
 
         for position in positions:
-            if position["symbol"] == symbol:
+            if position["symbol"] == ohlc.symbol:
                 if float(position['positionAmt']) != 0:
                     prev_amount = float(position['positionAmt'])
                     if prev_amount > 0 : 
@@ -152,7 +152,7 @@ def make_decision(df, i, prev_position, prev_amount, amount) :
         #     elif crossover == -1 and prev_position == 1 and rsi > 45 and rsi < 55 :
         #         sell(prev_amount)
         #         return
-        
+
         else :
             if crossover == 1 :
                 if prev_position == -1 :
