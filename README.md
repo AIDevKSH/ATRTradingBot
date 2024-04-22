@@ -77,9 +77,10 @@ RSI의 값은 일반적으로 0에서 100 사이의 범위에 있으며, 70 이�
 13. crontab -e 편집기 열기 <br/><br/>
     5분 마다 반복 실행, <br/>
     한 달 로그를 같은 경로에 압축 파일로 저장, 원본 삭제 <br/>
-*/5 * * * * /usr/bin/python3 /home/ec2-user/ATRTradingBot/trading.py >> /home/ec2-user/logs/trading.log 2>&1
+    아래 명령어 그대로 복붙하면 띄어쓰기 이슈 있음. 챗쥐피티한테 제대로 써달라 하셈<br/>
+    */5 * * * * /usr/bin/python3 /home/ec2-user/ATRTradingBot/trading.py >> /home/ec2-user/logs/trading.log 2>&1
 
-0 0 1 * * /bin/tar -czf /home/ec2-user/logs/archive-$(date +\%Y\%m\%d).tar.gz /home/ec2-user/logs/*.log && /bin/find /home/ec2-user/logs/ -type f -name "*.log" -exec /bin/rm {} \;
+    0 0 1 * * /bin/tar -czf /home/ec2-user/logs/archive-$(date +\%Y\%m\%d).tar.gz /home/ec2-user/logs/*.log && /bin/find /home/ec2-user/logs/ -type f -name "*.log" -exec /bin/rm {} \;
 <br/><br/>
     작성 후 저장 <br/><br/>
 
