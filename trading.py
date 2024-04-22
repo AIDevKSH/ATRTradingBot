@@ -334,11 +334,11 @@ if __name__ == "__main__" :
 
     now = datetime.now()
     formatted_now = now.strftime("%Y-%m-%d %H:%M")
-    print(formatted_now)
 
     prev_rsi = ohlc_df.iloc[-2]['RSI']
     prev_crossover = ohlc_df.iloc[-2]['Crossover']
     rsi = ohlc_df.iloc[-1]['RSI']
     crossover = ohlc_df.iloc[-1]['Crossover']
 
-    print(now, "RSI :", prev_rsi, rsi, "Crossover :", prev_crossover, crossover, "\n")
+    print(formatted_now)
+    print("RSI :", prev_rsi, rsi, "Crossover :", prev_crossover, crossover, "\n")
