@@ -11,9 +11,11 @@ api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
 client = Client(api_key=api_key, api_secret=api_secret)
 
+global symbol
 symbol = 'DOGEUSDT'
 
-loss_value = 2
+global loss_value
+loss_value = 1.75
 
 def concat_df():
     try:
