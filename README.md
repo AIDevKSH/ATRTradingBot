@@ -26,11 +26,11 @@ ATR을 사용하여 트레일링 스탑을 설정할 수 있습니다. ATR 트�
 
 <br/><br/><br/>
 
-<p>Take Profit | Stop Loss</p>
+<h3>😆 Take Profit | Stop Loss 😭</h3>
 <br/>
 <p>Leverage : 10X</p>
 <br/>
-<p>[Long]  가격 0.5% 상승 수익 : + 4.4%  | 가격 2% 하락 수익 : - 21%</p>
+<p>[Long] 가격 0.5% 상승 수익 : + 4.4%  | 가격 2% 하락 수익 : - 21%</p>
 <p>[Short] 가격 0.5% 하락 수익 : + 4.4%  | 가격 2% 상승 수익 : - 21%</p>
 <br/>
 <p>수익률은 근사치임</p>
@@ -65,29 +65,26 @@ ATR을 사용하여 트레일링 스탑을 설정할 수 있습니다. ATR 트�
 
 7. cd ATRTradingBot <br/><br/>
 
-8. .env 생성 <br/>
-   BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/><br/>
+8. .env 생성 BINANCE_API_KEY, BINANCE_API_SECRET 변수 만들고 값 입력 <br/><br/>
 
 9. testapi.py : 거래 작동 여부 확인용 <br/><br/>
 
-10. sudo chmod 774 trading.py (744 해도 될듯)<br/></br>
+10. sudo chmod 774 trading.py <br/></br>
 
 11. sudo /usr/bin/python3 /home/ec2-user/ATRTradingBot/trading.py 작동하는지 확인 <br/><br/>
 
 12. sudo mkdir /home/ec2-user/logs <br/>
     sudo chown ec2-user:ec2-user /home/ec2-user/logs <br/><br/>
 
-13. crontab -e 편집기 열기 <br/><br/>
-    5분 마다 반복 실행, <br/>
-    한 달 로그를 같은 경로에 압축 파일로 저장, 원본 삭제 <br/>
-    깃헙에서 아래 명령어 그대로 복붙하면 띄어쓰기 때문에 에러남. 리드미 파일 열어서 복붙 ㄱㄱ<br/>
+13. crontab -e <br/>
+    5분 마다 반복 실행, 한 달 주기로 로그를 압축 파일로 저장<br/>
+    깃헙에서 복붙하면 띄어쓰기 때문에 에러남. 리드미 파일 열어서 복붙하고 저장<br/>
 
     */5 * * * * /usr/bin/python3 /home/ec2-user/ATRTradingBot/trading.py >> /home/ec2-user/logs/trading.log 2>&1
 
     0 0 1 * * /bin/tar -czf /home/ec2-user/logs/archive-$(date +\%Y\%m\%d).tar.gz /home/ec2-user/logs/*.log && /bin/find /home/ec2-user/logs/ -type f -name "*.log" -exec /bin/rm {} \;
 
-<br/><br/>
-    작성 후 저장 <br/><br/>
+    <br/><br/>
 
 14. sudo service crond restart <br/><br/>
 
