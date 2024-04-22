@@ -14,7 +14,7 @@ import ohlc
 api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
 
-leverage = 5
+leverage = 20
 
 binance = ccxt.binance(config={
     'apiKey': api_key, 
@@ -27,12 +27,11 @@ binance = ccxt.binance(config={
 
 def post_leverage():
     try:
-        resp = binance.fapiprivate_post_leverage({
+        binance.fapiprivate_post_leverage({
             'symbol': ohlc.symbol,
             'leverage': leverage,
         })
         time.sleep(0.5)
-        return resp
     
     except Exception as e:
         print("post_leverage() Exception:", e)
@@ -52,7 +51,7 @@ def calculate_amount(usdt, df):
     try :
         current_price = df.iloc[-1]['Close']
         if usdt > current_price:
-            amount = usdt / current_price / 3
+            amount = usdt / current_price
             amount = int(amount) - 1
             return amount
         elif usdt < current_price:
@@ -66,7 +65,45 @@ def calculate_amount(usdt, df):
     except Exception as e:
         print("calculate_amount() Exception", e)
 
-def buy(amount):
+def enter_long(amount, price):
+    try :
+        binance.create_market_buy_order(
+            symbol=ohlc.symbol,
+            amount=amount,
+        )
+        time.sleep(0.5)
+
+        tp = round(1.01 * price, 5)
+        sl = round(0.985 * price, 5)
+
+        binance.create_order(
+            symbol=ohlc.symbol,
+            type="TAKE_PROFIT_MARKET",
+            side="sell",
+            amount=amount,
+            params={
+                'positionSide': 'LONG',
+                'stopPrice': tp
+                }
+        )
+        time.sleep(0.5)
+
+        binance.create_order(
+            symbol=ohlc.symbol,
+            type="STOP_MARKET",
+            side="sell",
+            amount=amount,
+            params={
+                'positionSide': 'LONG',
+                'stopPrice': sl
+                }
+        )
+        time.sleep(0.5)
+
+    except Exception as e:
+        print("buy() Exception", e)
+
+def close_short(amount, price):
     try :
         binance.create_market_buy_order(
             symbol=ohlc.symbol,
@@ -77,7 +114,45 @@ def buy(amount):
     except Exception as e:
         print("buy() Exception", e)
 
-def sell(amount):
+def enter_short(amount, price):
+    try :
+        binance.create_market_sell_order(
+            symbol=ohlc.symbol,
+            amount=amount,
+        )
+        time.sleep(0.5)
+
+        tp = round(0.99 * price, 5)
+        sl = round(1.015 * price, 5)
+
+        binance.create_order(
+            symbol=ohlc.symbol,
+            type="TAKE_PROFIT_MARKET",
+            side="buy",
+            amount=amount,
+            params={
+                'positionSide': 'SHORT',
+                'stopPrice': tp
+            }
+        )
+        time.sleep(0.5)
+
+        binance.create_order(
+            symbol=ohlc.symbol,
+            type="STOP_MARKET",
+            side="buy",
+            amount=amount,
+            params={
+                'positionSide': 'SHORT',
+                'stopPrice': sl
+            }
+        )
+        time.sleep(0.5)
+
+    except Exception as e:
+        print("sell() Exception", e)
+
+def close_long(amount):
     try :
         binance.create_market_sell_order(
             symbol=ohlc.symbol,
@@ -119,77 +194,49 @@ def my_position():
 def make_decision(df, i, prev_position, prev_amount, amount) :
     try :
         crossover = df.iloc[i]['Crossover']
-        # rsi = df.iloc[i]['RSI']
+        price = df.iloc[i]['Close']
         
         if crossover == 0 :
             return
-        
-        # else :
-        #     if crossover == 1 and rsi <= 45 or rsi >= 55 :
-        #         if prev_position == -1 :
-        #             buy(prev_amount)
-
-        #         elif prev_position == 1 :
-        #             return
-                
-        #         buy(amount)
-        #         return
-
-        #     elif crossover == -1 and rsi <= 45 or rsi >= 55 :
-        #         if prev_position == 1 :
-        #             sell(prev_amount)
-
-        #         elif prev_position == -1 :
-        #             return
-                
-        #         sell(amount)
-        #         return
-
-        #     elif crossover == 1 and prev_position == -1 and rsi > 45 and rsi < 55 :
-        #         buy(prev_amount)
-        #         return
-
-        #     elif crossover == -1 and prev_position == 1 and rsi > 45 and rsi < 55 :
-        #         sell(prev_amount)
-        #         return
 
         else :
             if crossover == 1 :
                 if prev_position == -1 :
-                    buy(prev_amount)
+                    close_short(prev_amount)
 
                 elif prev_position == 1 :
                     return
                 
-                buy(amount)
+                enter_long(amount, price)
                 return
 
             elif crossover == -1 :
                 if prev_position == 1 :
-                    sell(prev_amount)
+                    close_long(prev_amount)
 
                 elif prev_position == -1 :
                     return
                 
-                sell(amount)
+                enter_short(amount, price)
                 return
 
             elif crossover == 1 and prev_position == -1 :
-                buy(prev_amount)
+                close_short(prev_amount)
                 return
 
             elif crossover == -1 and prev_position == 1 :
-                sell(prev_amount)
+                close_long(prev_amount)
                 return
 
     except Exception as e :
         print("make_decision() Exception", e)
     
 if __name__ == "__main__" :
-    post_leverage()
-    time.sleep(1)
-    ohlc_df = ohlc.get_ohlc()
+    print(datetime.now().strftime("%Y-%m-%d %H:%M"))
 
+    post_leverage()
+
+    ohlc_df = ohlc.get_ohlc()
     usdt = get_balance()
     amount = calculate_amount(usdt, ohlc_df.tail(1))
     prev_position, prev_amount = my_position()
@@ -197,11 +244,5 @@ if __name__ == "__main__" :
     make_decision(ohlc_df, -2, prev_position, prev_amount, amount)
     make_decision(ohlc_df, -1, prev_position, prev_amount, amount)
 
-    now = datetime.now()
-    formatted_now = now.strftime("%Y-%m-%d %H:%M")
-
     prev_crossover = ohlc_df.iloc[-2]['Crossover']
     crossover = ohlc_df.iloc[-1]['Crossover']
-
-    print(formatted_now)
-    print("Prev :", prev_crossover, "Now :",crossover, "\n")
