@@ -13,7 +13,7 @@ client = Client(api_key=api_key, api_secret=api_secret)
 
 symbol = 'DOGEUSDT'
 
-loss_value = 1.2
+loss_value = 2
 
 def concat_df():
     try:

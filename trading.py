@@ -280,48 +280,41 @@ def my_position():
     except Exception as e:
         print("my_position() Exception", e)
 
-def make_decision(df) :
+def make_decision(df, i, prev_position, prev_amount, amount) :
     try :
-        crossover = df.iloc[-1]['Crossover']
-        rsi = df.iloc[-1]['RSI']
-        prev_position, prev_amount = my_position()
-        usdt = get_balance()
-        amount = calculate_amount(usdt, df.tail(1))
-
+        crossover = df.iloc[i]['Crossover']
+        rsi = df.iloc[i]['RSI']
+        
         if crossover == 0 :
-            print("Hold Position. Crossover :", crossover)
             return
         
         else :
-
             if crossover == 1 and rsi <= 45 or rsi >= 55 :
                 if prev_position == -1 :
                     buy(prev_amount)
-                    print("Close Short Position. Prev Amount :", prev_amount)
+
                 elif prev_position == 1 :
                     return
+                
                 buy(amount)
-                print("Enter Long Position. Crossover :", crossover, " RSI :", rsi, " Amount :", amount)
                 return
 
             elif crossover == -1 and rsi <= 45 or rsi >= 55 :
                 if prev_position == 1 :
                     sell(prev_amount)
-                    print("Close Long Position. Prev Amount :", prev_amount)
+
                 elif prev_position == -1 :
                     return
+                
                 sell(amount)
-                print("Enter Short Position. Crossover :", crossover, " RSI :", rsi, " Amount :", amount)
                 return
 
             elif crossover == 1 and prev_position == -1 and rsi > 45 and rsi < 55 :
                 buy(prev_amount)
-                print("Close Short Position. Prev Amount :", prev_amount)
                 return
 
             elif crossover == -1 and prev_position == 1 and rsi > 45 and rsi < 55 :
                 sell(prev_amount)
-                print("Close Long Position. Prev Amount :", prev_amount)
                 return
 
     except Exception as e :
@@ -329,9 +322,23 @@ def make_decision(df) :
     
 if __name__ == "__main__" :
     post_leverage()
-    time.sleep(3)
+    time.sleep(1)
     ohlc_df = get_ohlc()
-    current_df = ohlc_df.tail(1)
-    print(current_df[['Timestamp', 'Close', 'Crossover', 'RSI']])
-    make_decision(ohlc_df)
-    ohlc_df = None
+
+    usdt = get_balance()
+    amount = calculate_amount(usdt, ohlc_df.tail(1))
+    prev_position, prev_amount = my_position()
+
+    make_decision(ohlc_df, -2, prev_position, prev_amount, amount)
+    make_decision(ohlc_df, -1, prev_position, prev_amount, amount)
+
+    now = datetime.now()
+    formatted_now = now.strftime("%Y-%m-%d %H:%M")
+    print(formatted_now)
+
+    prev_rsi = ohlc_df.iloc[-2]['RSI']
+    prev_crossover = ohlc_df.iloc[-2]['Crossover']
+    rsi = ohlc_df.iloc[-1]['RSI']
+    crossover = ohlc_df.iloc[-1]['Crossover']
+
+    print(now, "RSI :", prev_rsi, rsi, "Crossover :", prev_crossover, crossover, "\n")
