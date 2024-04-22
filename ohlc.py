@@ -15,7 +15,7 @@ global symbol
 symbol = 'DOGEUSDT'
 
 global loss_value
-loss_value = 1.8
+loss_value = 1.6
 
 def concat_df():
     try:

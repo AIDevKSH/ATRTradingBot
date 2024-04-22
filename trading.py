@@ -14,7 +14,7 @@ import ohlc
 api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_API_SECRET")
 
-leverage = 20
+leverage = 10
 
 binance = ccxt.binance(config={
     'apiKey': api_key, 
@@ -49,13 +49,13 @@ def get_balance():
 
 def calculate_amount(usdt, df):
     try :
-        current_price = df.iloc[-1]['Close']
-        if usdt > current_price:
-            amount = usdt / current_price
+        price = df.iloc[-1]['Close']
+        if usdt > price:
+            amount = usdt / price
             amount = int(amount) - 1
             return amount
-        elif usdt < current_price:
-            # 여기 나중에 다시 계산해야됨
+        elif usdt < price:
+            # I plan to update it later
             amount = 0
             return amount
         else:
@@ -73,8 +73,8 @@ def enter_long(amount, price):
         )
         time.sleep(0.5)
 
-        tp = round(1.01 * price, 5)
-        sl = round(0.985 * price, 5)
+        tp = round(1.005 * price, 5)
+        sl = round(0.980 * price, 5)
 
         binance.create_order(
             symbol=ohlc.symbol,
@@ -99,6 +99,8 @@ def enter_long(amount, price):
                 }
         )
         time.sleep(0.5)
+
+        print("[Enter Long] Price :", price, ", amount :", amount)
 
     except Exception as e:
         print("buy() Exception", e)
@@ -122,8 +124,8 @@ def enter_short(amount, price):
         )
         time.sleep(0.5)
 
-        tp = round(0.99 * price, 5)
-        sl = round(1.015 * price, 5)
+        tp = round(0.995 * price, 5)
+        sl = round(1.020 * price, 5)
 
         binance.create_order(
             symbol=ohlc.symbol,
@@ -149,6 +151,8 @@ def enter_short(amount, price):
         )
         time.sleep(0.5)
 
+        print("[Enter Short] Price :", price, ", amount :", amount)
+
     except Exception as e:
         print("sell() Exception", e)
 
@@ -165,7 +169,7 @@ def close_long(amount):
 
 def my_position():
     try :
-        #  prev_position Value
+        #  prev_position
         #  0 : Initial Value, Have No Position
         #  1 : Prev Positon is Long
         # -1 : Prev Position is Short
@@ -244,5 +248,4 @@ if __name__ == "__main__" :
     make_decision(ohlc_df, -2, prev_position, prev_amount, amount)
     make_decision(ohlc_df, -1, prev_position, prev_amount, amount)
 
-    prev_crossover = ohlc_df.iloc[-2]['Crossover']
-    crossover = ohlc_df.iloc[-1]['Crossover']
+    print("\n")
