@@ -195,49 +195,53 @@ def my_position():
     except Exception as e:
         print("my_position() Exception", e)
 
-def make_decision(df, i) :
+# 포지션 정리는 crossover한 캔들
+def close_position(df) :
     try :
-        crossover = df.iloc[i]['Crossover']
-        price = df.iloc[i+1]['Close']
-        usdt = get_balance()
-        amount = calculate_amount(usdt, df.tail(1))
+        crossover = df.iloc[-1]['Crossover']
         prev_position, prev_amount = my_position()
 
         if crossover == 0 :
             return
 
         else :
-            if crossover == 1 :
-                if prev_position == -1 :
-                    close_short(prev_amount)
-                    time.sleep(3)
-                    usdt = get_balance()
-                    amount = calculate_amount(usdt, df.tail(1))
+            if crossover == 1 and prev_position == -1 :
+                close_short(prev_amount)
+                return
 
-                elif prev_position == 1 :
-                    return
-                
+            elif crossover == -1 and prev_position == 1 :
+                close_long(prev_amount)
+                return
+
+    except Exception as e :
+        print("end_position() Exception", e)
+
+# 포지션 진입은 crossover 캔들의 바로 다음 캔들
+def enter_position(df, i=-2) :
+    try :
+        crossover = df.iloc[i]['Crossover']
+        price = df.iloc[i+1]['Close']
+        usdt = get_balance()
+        amount = calculate_amount(usdt, df.tail(1))
+
+        if crossover == 0 :
+            return
+
+        else :
+            if crossover == 1 :
                 enter_long(amount, price)
                 return
 
             elif crossover == -1 :
-                if prev_position == 1 :
-                    close_long(prev_amount)
-                    time.sleep(3)
-                    usdt = get_balance()
-                    amount = calculate_amount(usdt, df.tail(1))
-
-                elif prev_position == -1 :
-                    return
-                
                 enter_short(amount, price)
                 return
 
     except Exception as e :
-        print("make_decision() Exception", e)
+        print("enter_position() Exception", e)
     
 if __name__ == "__main__" :
     print(datetime.now().strftime("%Y-%m-%d %H:%M"))
     post_leverage()
     ohlc_df = ohlc.get_ohlc()
-    make_decision(ohlc_df, -2)
+    close_position(ohlc_df)
+    enter_position(ohlc_df)
