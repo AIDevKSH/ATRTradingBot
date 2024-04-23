@@ -74,7 +74,7 @@ def enter_long(amount, price):
         time.sleep(0.5)
 
         tp = round(1.005 * price, 5)
-        sl = round(0.980 * price, 5)
+        sl = round(0.990 * price, 5)
 
         binance.create_order(
             symbol=ohlc.symbol,
@@ -105,7 +105,7 @@ def enter_long(amount, price):
     except Exception as e:
         print("buy() Exception", e)
 
-def close_short(amount, price):
+def close_short(amount):
     try :
         binance.create_market_buy_order(
             symbol=ohlc.symbol,
@@ -125,7 +125,7 @@ def enter_short(amount, price):
         time.sleep(0.5)
 
         tp = round(0.995 * price, 5)
-        sl = round(1.020 * price, 5)
+        sl = round(1.010 * price, 5)
 
         binance.create_order(
             symbol=ohlc.symbol,
@@ -195,11 +195,14 @@ def my_position():
     except Exception as e:
         print("my_position() Exception", e)
 
-def make_decision(df, i, prev_position, prev_amount, amount) :
+def make_decision(df, i) :
     try :
         crossover = df.iloc[i]['Crossover']
-        price = df.iloc[i]['Close']
-        
+        price = df.iloc[i+1]['Close']
+        usdt = get_balance()
+        amount = calculate_amount(usdt, df.tail(1))
+        prev_position, prev_amount = my_position()
+
         if crossover == 0 :
             return
 
@@ -207,6 +210,9 @@ def make_decision(df, i, prev_position, prev_amount, amount) :
             if crossover == 1 :
                 if prev_position == -1 :
                     close_short(prev_amount)
+                    time.sleep(3)
+                    usdt = get_balance()
+                    amount = calculate_amount(usdt, df.tail(1))
 
                 elif prev_position == 1 :
                     return
@@ -217,6 +223,9 @@ def make_decision(df, i, prev_position, prev_amount, amount) :
             elif crossover == -1 :
                 if prev_position == 1 :
                     close_long(prev_amount)
+                    time.sleep(3)
+                    usdt = get_balance()
+                    amount = calculate_amount(usdt, df.tail(1))
 
                 elif prev_position == -1 :
                     return
@@ -224,28 +233,11 @@ def make_decision(df, i, prev_position, prev_amount, amount) :
                 enter_short(amount, price)
                 return
 
-            elif crossover == 1 and prev_position == -1 :
-                close_short(prev_amount)
-                return
-
-            elif crossover == -1 and prev_position == 1 :
-                close_long(prev_amount)
-                return
-
     except Exception as e :
         print("make_decision() Exception", e)
     
 if __name__ == "__main__" :
     print(datetime.now().strftime("%Y-%m-%d %H:%M"))
-
     post_leverage()
-
     ohlc_df = ohlc.get_ohlc()
-    usdt = get_balance()
-    amount = calculate_amount(usdt, ohlc_df.tail(1))
-    prev_position, prev_amount = my_position()
-
-    make_decision(ohlc_df, -2, prev_position, prev_amount, amount)
-    make_decision(ohlc_df, -1, prev_position, prev_amount, amount)
-
-    print("\n")
+    make_decision(ohlc_df, -2)
