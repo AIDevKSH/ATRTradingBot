@@ -198,24 +198,26 @@ def my_position():
     except Exception as e:
         print("my_position() Exception", e)
 
-def close_position(df) :
+def close_position(df, prev_position, prev_amount) :
     try :
         crossover = df.iloc[-1]['Crossover']
-        prev_position, prev_amount = my_position()
         price = df.iloc[-1]['Close']
 
-        if crossover == 1 and prev_position == -1 :
-            close_short(prev_amount, price)
-            cancel_all_orders(ohlc.symbol)
-            
-        elif crossover == -1 and prev_position == 1 :
-            close_long(prev_amount, price)
-            cancel_all_orders(ohlc.symbol)
+        if prev_position != 0 : 
+            return
+        else :
+            if crossover == 1 and prev_position == -1 :
+                close_short(prev_amount, price)
+                cancel_all_orders(ohlc.symbol)
+                
+            elif crossover == -1 and prev_position == 1 :
+                close_long(prev_amount, price)
+                cancel_all_orders(ohlc.symbol)
 
     except Exception as e :
         print("end_position() Exception", e)
 
-def enter_position(df) :
+def enter_position(df, prev_position, prev_amount) :
     try :
         crossover = df.iloc[-2]['Crossover']
         price = df.iloc[-1]['Close']
@@ -234,5 +236,6 @@ def enter_position(df) :
 if __name__ == "__main__" :
     post_leverage()
     ohlc_df = ohlc.get_ohlc()
-    close_position(ohlc_df)
-    enter_position(ohlc_df)
+    prev_position, prev_amount = my_position()
+    close_position(ohlc_df, prev_position, prev_amount)
+    enter_position(ohlc_df, prev_position, prev_amount)
