@@ -203,32 +203,32 @@ def close_position(df, prev_position, prev_amount) :
         crossover = df.iloc[-1]['Crossover']
         price = df.iloc[-1]['Close']
 
-        if prev_position != 0 : 
-            return
-        else :
-            if crossover == 1 and prev_position == -1 :
-                close_short(prev_amount, price)
-                cancel_all_orders(ohlc.symbol)
+        if crossover == 1 and prev_position == -1 :
+            close_short(prev_amount, price)
+            cancel_all_orders(ohlc.symbol)
                 
-            elif crossover == -1 and prev_position == 1 :
-                close_long(prev_amount, price)
-                cancel_all_orders(ohlc.symbol)
+        elif crossover == -1 and prev_position == 1 :
+            close_long(prev_amount, price)
+            cancel_all_orders(ohlc.symbol)
 
     except Exception as e :
         print("end_position() Exception", e)
 
-def enter_position(df, prev_position, prev_amount) :
+def enter_position(df, prev_position) :
     try :
-        crossover = df.iloc[-2]['Crossover']
-        price = df.iloc[-1]['Close']
-        usdt = get_balance()
-        amount = calculate_amount(usdt, df.tail(1))
+        if prev_position != 0 : 
+            return
+        else :
+            crossover = df.iloc[-2]['Crossover']
+            price = df.iloc[-1]['Close']
+            usdt = get_balance()
+            amount = calculate_amount(usdt, df.tail(1))
 
-        if crossover == 1 :
-            enter_long(amount, price)
+            if crossover == 1 :
+                enter_long(amount, price)
 
-        elif crossover == -1 :
-            enter_short(amount, price)
+            elif crossover == -1 :
+                enter_short(amount, price)
 
     except Exception as e :
         print("enter_position() Exception", e)
@@ -238,4 +238,4 @@ if __name__ == "__main__" :
     ohlc_df = ohlc.get_ohlc()
     prev_position, prev_amount = my_position()
     close_position(ohlc_df, prev_position, prev_amount)
-    enter_position(ohlc_df, prev_position, prev_amount)
+    enter_position(ohlc_df, prev_position)
