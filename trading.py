@@ -81,10 +81,7 @@ def enter_long(amount, price):
             type="TAKE_PROFIT_MARKET",
             side="sell",
             amount=amount,
-            params={
-                'positionSide': 'LONG',
-                'stopPrice': tp
-                }
+            params={'stopPrice': tp}
         )
         time.sleep(0.5)
 
@@ -93,10 +90,7 @@ def enter_long(amount, price):
             type="STOP_MARKET",
             side="sell",
             amount=amount,
-            params={
-                'positionSide': 'LONG',
-                'stopPrice': sl
-                }
+            params={'stopPrice': sl}
         )
         time.sleep(0.5)
 
@@ -132,10 +126,7 @@ def enter_short(amount, price):
             type="TAKE_PROFIT_MARKET",
             side="buy",
             amount=amount,
-            params={
-                'positionSide': 'SHORT',
-                'stopPrice': tp
-            }
+            params={'stopPrice': tp}
         )
         time.sleep(0.5)
 
@@ -144,10 +135,7 @@ def enter_short(amount, price):
             type="STOP_MARKET",
             side="buy",
             amount=amount,
-            params={
-                'positionSide': 'SHORT',
-                'stopPrice': sl
-            }
+            params={'stopPrice': sl}
         )
         time.sleep(0.5)
 
