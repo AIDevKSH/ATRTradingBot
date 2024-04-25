@@ -79,7 +79,7 @@ def enter_long(amount, price):
     except Exception as e:
         print("buy() Exception", e)
 
-def cancel_all_open_orders(symbol):
+def cancel_all_orders(symbol):
     try:
         binance.cancel_all_orders(symbol=symbol)
         print("모든 열려 있는 주문이 취소되었습니다.")
@@ -93,4 +93,4 @@ if __name__ == "__main__" :
     price = ohlc_df.iloc[-1]['Close']
     amount = 100
     enter_long(100, price)
-    cancel_all_open_orders(ohlc.symbol)
+    cancel_all_orders(ohlc.symbol)

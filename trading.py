@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 sys.path.append('/home/ec2-user/.local/lib/python3.9/site-packages')
+# 1,2,3번 줄은 EC2에서 작동시킬 때에만 필요한 코드. 다른 환경에서 작동시킬 때는 지워야됨.
 import ccxt
 import time
 import warnings
@@ -94,18 +95,21 @@ def enter_long(amount, price):
         )
         time.sleep(0.5)
 
-        print("[Enter Long] Price :", price, ", amount :", amount)
+        print(datetime.now().strftime("%Y-%m-%d %H:%M"))
+        print("[Long] Price :", price, ", Amount :", amount, "TP :", tp, " SL :", sl)
 
     except Exception as e:
-        print("buy() Exception", e)
+        print("enter_long() Exception", e)
 
-def close_short(amount):
+def close_short(amount, price):
     try :
         binance.create_market_buy_order(
             symbol=ohlc.symbol,
             amount=amount,
         )
         time.sleep(0.5)
+        print(datetime.now().strftime("%Y-%m-%d %H:%M"))
+        print("[Close Short] Price :", price)
 
     except Exception as e:
         print("buy() Exception", e)
@@ -139,21 +143,32 @@ def enter_short(amount, price):
         )
         time.sleep(0.5)
 
-        print("[Enter Short] Price :", price, ", amount :", amount)
+        print(datetime.now().strftime("%Y-%m-%d %H:%M"))
+        print("[Enter Short] Price :", price, ", amount :", amount, "TP :", tp, " SL :", sl)
 
     except Exception as e:
-        print("sell() Exception", e)
+        print("enter_short() Exception", e)
 
-def close_long(amount):
+def close_long(amount, price):
     try :
         binance.create_market_sell_order(
             symbol=ohlc.symbol,
             amount=amount,
         )
         time.sleep(0.5)
+        print(datetime.now().strftime("%Y-%m-%d %H:%M"))
+        print("[Close Long] Price :", price)
 
     except Exception as e:
         print("sell() Exception", e)
+
+def cancel_all_orders(symbol):
+    try:
+        binance.cancel_all_orders(symbol=symbol)
+        time.sleep(0.5)
+    
+    except Exception as e:
+        print("cancel_all_open_orders() Exception:", e)
 
 def my_position():
     try :
@@ -183,52 +198,40 @@ def my_position():
     except Exception as e:
         print("my_position() Exception", e)
 
-# 포지션 정리는 crossover한 캔들
 def close_position(df) :
     try :
         crossover = df.iloc[-1]['Crossover']
         prev_position, prev_amount = my_position()
+        price = df.iloc[-1]['Close']
 
-        if crossover == 0 :
-            return
-
-        else :
-            if crossover == 1 and prev_position == -1 :
-                close_short(prev_amount)
-                return
-
-            elif crossover == -1 and prev_position == 1 :
-                close_long(prev_amount)
-                return
+        if crossover == 1 and prev_position == -1 :
+            close_short(prev_amount, price)
+            cancel_all_orders(ohlc.symbol)
+            
+        elif crossover == -1 and prev_position == 1 :
+            close_long(prev_amount, price)
+            cancel_all_orders(ohlc.symbol)
 
     except Exception as e :
         print("end_position() Exception", e)
 
-# 포지션 진입은 crossover 캔들의 바로 다음 캔들
-def enter_position(df, i=-2) :
+def enter_position(df) :
     try :
-        crossover = df.iloc[i]['Crossover']
-        price = df.iloc[i+1]['Close']
+        crossover = df.iloc[-2]['Crossover']
+        price = df.iloc[-1]['Close']
         usdt = get_balance()
         amount = calculate_amount(usdt, df.tail(1))
 
-        if crossover == 0 :
-            return
+        if crossover == 1 :
+            enter_long(amount, price)
 
-        else :
-            if crossover == 1 :
-                enter_long(amount, price)
-                return
-
-            elif crossover == -1 :
-                enter_short(amount, price)
-                return
+        elif crossover == -1 :
+            enter_short(amount, price)
 
     except Exception as e :
         print("enter_position() Exception", e)
     
 if __name__ == "__main__" :
-    print(datetime.now().strftime("%Y-%m-%d %H:%M"))
     post_leverage()
     ohlc_df = ohlc.get_ohlc()
     close_position(ohlc_df)

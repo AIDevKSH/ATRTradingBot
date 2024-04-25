@@ -166,7 +166,7 @@ def if_crossover(df):
 def get_ohlc():
     try:
         df = concat_df()
-        df = calculate_rsi(df)
+        # df = calculate_rsi(df)
         df = calculate_atr(df)
         df = calculate_atr_trailing_stop(df)
         df = if_crossover(df)
